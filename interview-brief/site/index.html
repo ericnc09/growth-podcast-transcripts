@@ -1,0 +1,270 @@
+<title>Interview Brief</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,750&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a briefing sheet. Company tabs on top, the brief on the left, prep notes in a right rail that stacks under it on phones. */
+:root {
+  --bg: #f5f6f3; --sheet: #ffffff; --ink: #18211f; --muted: #5d6965; --line: #dde2de;
+  --accent: #0d6b62; --accent-soft: #e1efec; --mark: #fbe9a6; --mark-ink: #5a4500;
+  --display: "Bricolage Grotesque", "Inter", system-ui, sans-serif;
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #111615; --sheet: #182020; --ink: #e6ece9; --muted: #9aa8a3; --line: #2a3533;
+  --accent: #5cc4b5; --accent-soft: #1d3330; --mark: #4a3d12; --mark-ink: #f5dc85; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #111615; --sheet: #182020; --ink: #e6ece9; --muted: #9aa8a3; --line: #2a3533;
+  --accent: #5cc4b5; --accent-soft: #1d3330; --mark: #4a3d12; --mark-ink: #f5dc85; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font: 15px/1.55 var(--body); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 28px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header { display: grid; gap: 8px; margin-bottom: 22px }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--accent) }
+h1 { font: 750 clamp(30px, 5vw, 44px)/1.05 var(--display); margin: 0; text-wrap: balance; letter-spacing: -.01em }
+.lede { margin: 0; color: var(--muted); max-width: 62ch }
+nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 8px }
+nav a { text-decoration: none; color: var(--ink); border: 1px solid var(--line); background: var(--sheet);
+  padding: 7px 13px; border-radius: 999px; font-weight: 500; font-size: 14px }
+nav a:hover { border-color: var(--accent) }
+nav a[aria-current="true"] { background: var(--accent); border-color: var(--accent); color: var(--sheet) }
+nav a:focus-visible, button:focus-visible, input:focus-visible, .clip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.missing { font-size: 13px; color: var(--muted); margin: 4px 0 0 }
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 22px; margin-top: 18px; align-items: start }
+@media (max-width: 860px) { .grid { grid-template-columns: minmax(0, 1fr) } }
+.sheet { background: var(--sheet); border: 1px solid var(--line); border-radius: 10px; padding: 24px; min-width: 0 }
+.sheet h2 { font: 750 28px/1.1 var(--display); margin: 0 0 6px }
+.coverage { color: var(--muted); margin: 0 0 4px; max-width: 65ch }
+.meta { font: 500 12px/1.4 var(--mono); color: var(--muted) }
+.points { display: grid; gap: 0; margin-top: 18px }
+.point { display: grid; gap: 8px; padding: 18px 0; border-top: 1px solid var(--line) }
+.point-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline }
+.theme { font: 500 11px/1 var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--accent);
+  background: var(--accent-soft); padding: 4px 7px; border-radius: 4px }
+.point p.claim { margin: 0; font-weight: 600; font-size: 16px; max-width: 65ch }
+blockquote { margin: 0; padding-left: 14px; border-left: 2px solid var(--line); color: var(--ink); max-width: 65ch }
+blockquote::before { content: "\201C" } blockquote::after { content: "\201D" }
+.who { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-size: 13px; color: var(--muted) }
+.who strong { color: var(--ink); font-weight: 600 }
+.asof { font: 500 12px/1 var(--mono); background: var(--mark); color: var(--mark-ink); padding: 3px 6px; border-radius: 3px }
+.clip { font: 500 12px/1 var(--mono); color: var(--accent); text-decoration: none; border: 1px solid var(--accent);
+  padding: 4px 8px; border-radius: 4px; white-space: nowrap }
+.clip:hover { background: var(--accent-soft) }
+.note { font-size: 12px; color: var(--muted); font-style: italic }
+aside { display: grid; gap: 16px; min-width: 0 }
+.card { background: var(--sheet); border: 1px solid var(--line); border-radius: 10px; padding: 18px }
+.card h3 { font: 600 17px/1.2 var(--display); margin: 0 0 4px }
+.card .sub { font-size: 12px; color: var(--muted); margin: 0 0 10px }
+.card ol, .card ul { margin: 0; padding-left: 18px; display: grid; gap: 8px }
+.playlist { list-style: none; padding: 0 !important }
+.playlist li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start }
+.playlist span { font-size: 13px }
+.actions { display: flex; flex-wrap: wrap; gap: 8px }
+button { font: 600 14px var(--body); border-radius: 6px; padding: 8px 13px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--sheet); color: var(--ink) }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--sheet) }
+button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft) }
+input[type=text] { width: 100%; font: 14px var(--body); padding: 8px 10px; border: 1px solid var(--line);
+  border-radius: 6px; background: var(--bg); color: var(--ink) }
+.status { font-size: 13px; color: var(--accent); min-height: 1.2em; margin: 6px 0 0 }
+footer { margin-top: 28px; font-size: 13px; color: var(--muted); display: grid; gap: 6px; max-width: 80ch }
+footer a { color: var(--accent) }
+@media (prefers-reduced-motion: no-preference) { .sheet { animation: in .25s ease-out } @keyframes in { from { transform: translateY(4px) } } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">From 166 episodes of The Growth Podcast</div>
+    <h1>Interview Brief</h1>
+    <p class="lede">Got a PM interview coming up? Pick the company. You'll see what people who worked there said on the pod about what they value, how they build and how they hire. Every quote is dated and links to the second it was said.</p>
+  </header>
+
+  <nav id="tabs" aria-label="Companies"></nav>
+  <p class="missing" id="missing"></p>
+
+  <div class="grid">
+    <main class="sheet" id="brief" aria-live="polite"></main>
+    <aside>
+      <section class="card">
+        <h3>Bring up in the interview</h3>
+        <p class="sub">Suggestions from this tool, based on the quotes.</p>
+        <ol id="talk"></ol>
+      </section>
+      <section class="card">
+        <h3>Questions to ask them</h3>
+        <p class="sub">Suggestions from this tool.</p>
+        <ul id="ask"></ul>
+      </section>
+      <section class="card">
+        <h3>Listen before you go</h3>
+        <p class="sub" id="listen-sub">Each clip opens on YouTube about 15 seconds early.</p>
+        <ul class="playlist" id="listen"></ul>
+      </section>
+      <section class="card">
+        <h3>Take it with you</h3>
+        <p class="sub">Copies the brief as plain text for your prep notes.</p>
+        <div class="actions"><button class="primary" id="copy" type="button">Copy brief</button></div>
+        <p class="status" id="copy-status"></p>
+        <textarea id="copy-fallback" hidden readonly style="width:100%;height:120px;margin-top:8px"></textarea>
+      </section>
+      <section class="card" id="feedback">
+        <h3>Did this help you prep?</h3>
+        <div class="actions">
+          <button type="button" id="vote-yes" aria-pressed="false">Yes</button>
+          <button type="button" id="vote-no" aria-pressed="false">Not really</button>
+        </div>
+        <label for="missing-input" class="sub" style="display:block;margin:12px 0 6px">What was missing, or which company should be next?</label>
+        <input type="text" id="missing-input" maxlength="200" placeholder="e.g. Stripe, or what they ask in onsites">
+        <div class="actions" style="margin-top:8px"><button type="button" id="send">Send</button></div>
+        <p class="status" id="fb-status"></p>
+      </section>
+    </aside>
+  </div>
+
+  <footer>
+    <div>Built on the <a href="https://github.com/aakashg/growth-podcast-transcripts" target="_blank" rel="noopener">transcripts</a> of <a href="https://www.news.aakashg.com" target="_blank" rel="noopener">The Growth Podcast with Aakash Gupta</a>. Watch the full episodes there. Guests and the show don't endorse this tool.</div>
+    <div>Transcripts are machine-made, so names and numbers can be misheard. Play the clip before you repeat a quote in an interview. Most guests have since moved on, so check the date on each point.</div>
+  </footer>
+</div>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  const D = window.BRIEFS || { companies: [], not_covered: [] };
+  const byId = Object.fromEntries(D.companies.map(c => [c.id, c]));
+  const $ = id => document.getElementById(id);
+  const el = (tag, attrs = {}, text) => { const e = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); if (text != null) e.textContent = text; return e; };
+  const fmtDate = d => new Date(d + "T12:00:00").toLocaleDateString(undefined, { month: "short", year: "numeric" });
+  let current = null, voted = null, db = null;
+
+  // Tabs
+  for (const c of D.companies) {
+    const a = el("a", { href: "#" + c.id, "data-id": c.id }, c.name);
+    $("tabs").appendChild(a);
+  }
+  $("missing").textContent = "Not enough insider coverage yet for " + D.not_covered.join(", ") + ". Tell us which one you need below.";
+
+  function clipLink(p) {
+    const a = el("a", { class: "clip", href: p.youtube, target: "_blank", rel: "noopener",
+      "aria-label": "Play clip at " + p.ts + " on YouTube" }, "▶ " + p.ts);
+    return a;
+  }
+
+  function render(id) {
+    const c = byId[id] || D.companies[0];
+    if (!c) return;
+    current = c;
+    document.querySelectorAll("#tabs a").forEach(a => a.setAttribute("aria-current", String(a.dataset.id === c.id)));
+    const b = $("brief"); b.replaceChildren();
+    b.appendChild(el("h2", {}, c.name));
+    b.appendChild(el("p", { class: "coverage" }, c.coverage));
+    b.appendChild(el("div", { class: "meta" },
+      c.points.length + " points · " + c.people.length + " people · said " + fmtDate(c.range[0]) +
+      (c.range[0].slice(0, 7) !== c.range[1].slice(0, 7) ? " to " + fmtDate(c.range[1]) : "")));
+    const list = el("div", { class: "points" });
+    for (const p of c.points) {
+      const row = el("article", { class: "point" });
+      const head = el("div", { class: "point-head" });
+      head.appendChild(el("span", { class: "theme" }, p.theme));
+      row.appendChild(head);
+      row.appendChild(el("p", { class: "claim" }, p.point));
+      row.appendChild(el("blockquote", {}, p.quote));
+      const who = el("div", { class: "who" });
+      const name = el("span"); name.appendChild(el("strong", {}, p.speaker)); name.append(", " + p.role);
+      who.appendChild(name);
+      who.appendChild(el("span", { class: "asof", title: "When this was said" }, "said " + fmtDate(p.date)));
+      who.appendChild(clipLink(p));
+      row.appendChild(who);
+      row.appendChild(el("div", { class: "note" }, "From “" + p.episode + "”" + (p.label_note ? ". " + p.label_note : "")));
+      list.appendChild(row);
+    }
+    b.appendChild(list);
+
+    $("talk").replaceChildren(...c.talking_points.map(t => el("li", {}, t)));
+    $("ask").replaceChildren(...c.questions_to_ask.map(t => el("li", {}, t)));
+    const seen = new Set(), clips = [];
+    for (const p of [...c.points].sort((x, y) => y.date.localeCompare(x.date))) {
+      const k = p.file + p.ts; if (seen.has(k)) continue; seen.add(k); clips.push(p);
+    }
+    $("listen").replaceChildren(...clips.map(p => { const li = el("li"); li.appendChild(clipLink(p));
+      li.appendChild(el("span", {}, p.speaker + ": " + p.point)); return li; }));
+    $("listen-sub").textContent = clips.length + " clips, newest first. Each opens on YouTube about 15 seconds early.";
+    voted = null; ["vote-yes", "vote-no"].forEach(i => $(i).setAttribute("aria-pressed", "false"));
+    $("fb-status").textContent = ""; $("copy-status").textContent = ""; $("copy-fallback").hidden = true;
+    log({ type: "open", company: c.id });
+  }
+
+  function briefText(c) {
+    const L = ["Interview brief: " + c.name, "From The Growth Podcast with Aakash Gupta", ""];
+    for (const p of c.points) {
+      L.push("- " + p.point, "  \"" + p.quote + "\"", "  " + p.speaker + ", " + p.role + " (" + p.date + ") " + p.youtube, "");
+    }
+    L.push("Bring up:", ...c.talking_points.map(t => "- " + t), "", "Ask them:", ...c.questions_to_ask.map(t => "- " + t));
+    return L.join("\n");
+  }
+
+  $("copy").addEventListener("click", () => {
+    const text = briefText(current);
+    const fallback = () => { const t = $("copy-fallback"); t.value = text; t.hidden = false; t.select();
+      $("copy-status").textContent = "Copy didn't work here. The text is selected below, so press Ctrl+C or Cmd+C."; };
+    try {
+      navigator.clipboard.writeText(text).then(() => { $("copy-status").textContent = "Copied. Paste it into your prep notes."; }, fallback);
+    } catch (e) { fallback(); }
+    log({ type: "copy", company: current.id });
+  });
+
+  function vote(v) {
+    voted = v;
+    $("vote-yes").setAttribute("aria-pressed", String(v === "yes"));
+    $("vote-no").setAttribute("aria-pressed", String(v === "no"));
+    log({ type: "vote", company: current.id, value: v }).then(ok => {
+      $("fb-status").textContent = ok ? "Thanks, noted." : "Thanks. (Feedback is only saved when you're signed in to Claude.)"; });
+  }
+  $("vote-yes").addEventListener("click", () => vote("yes"));
+  $("vote-no").addEventListener("click", () => vote("no"));
+  $("send").addEventListener("click", () => {
+    const v = $("missing-input").value.trim();
+    if (!v) { $("fb-status").textContent = "Type a company or what was missing, then press Send."; return; }
+    log({ type: "request", company: current.id, text: v.slice(0, 200) }).then(ok => {
+      $("fb-status").textContent = ok ? "Sent. Thanks, this decides what gets added next." : "Couldn't save that. Feedback is only saved when you're signed in to Claude.";
+      if (ok) $("missing-input").value = "";
+    });
+  });
+
+  // Usage log: anonymous events, no names stored. Works only for signed-in viewers; the page works without it.
+  const use = n => (window.claude && window.claude.use ? window.claude.use(n) : Promise.resolve(null)).catch(() => null);
+  // One document per viewer (events/<their id>), holding only counts, votes and their own requests.
+  let state = null, chain = Promise.resolve(true);
+  const docRef = Promise.all([use("db"), use("user")]).then(async ([d, u]) => {
+    if (!d || !u) return null;
+    const uid = await u.id().catch(() => null);
+    if (!uid) return null;
+    const ref = d.doc("events/" + uid);
+    const snap = await ref.get().catch(() => null);
+    const prev = snap && snap.exists ? snap.data() : {};
+    state = { first: prev.first || Date.now(), opens: Object.assign({}, prev.opens), copies: Object.assign({}, prev.copies),
+      votes: Object.assign({}, prev.votes), requests: Array.isArray(prev.requests) ? prev.requests.slice(-20) : [] };
+    return ref;
+  }).catch(() => null);
+  function log(ev) {
+    chain = chain.then(() => docRef).then(ref => {
+      if (!ref || !state) return false;
+      const c = ev.company;
+      if (ev.type === "open") state.opens[c] = (state.opens[c] || 0) + 1;
+      if (ev.type === "copy") state.copies[c] = (state.copies[c] || 0) + 1;
+      if (ev.type === "vote") state.votes[c] = ev.value;
+      if (ev.type === "request") state.requests = state.requests.concat([{ company: c, text: ev.text, at: Date.now() }]).slice(-20);
+      state.last = Date.now();
+      return ref.set(state).then(() => true, () => false);
+    }).catch(() => false);
+    return chain;
+  }
+
+  function route() { render(location.hash.slice(1)); }
+  window.addEventListener("hashchange", route);
+  route();
+})();
+</script>

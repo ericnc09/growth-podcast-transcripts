@@ -1,0 +1,14 @@
+{
+ "google": ["Bilawal Sidhu","Itamar Gilad","Satyajeet Salgar","Marily Nika","Shobhit Chugh","Elizabeth Laraki","Diego Granados","Gabor Meyer","Daniel McKinnon","Mahesh Yadav"],
+ "meta": ["Andre Nader","Vineeth Madhusudanan","Poorvi Shrivastav","Marily Nika","Jyothi Nookula","Abhi Muchhal","Daniel McKinnon","Mahesh Yadav"],
+ "microsoft": ["Vineeth Madhusudanan","Diego Granados","Dr. Bart Jaworski","Jeremy Epling","Mahesh Yadav"],
+ "amazon": ["Ethan Evans","Jyothi Nookula","Mahesh Yadav"],
+ "openai": ["Jake Brill","Abhi Muchhal","Ryan Lopopolo"],
+ "salesforce": ["Poorvi Shrivastav","Jayesh Govindarajan"],
+ "airbnb": ["Mona Gandhi"],
+ "zapier": ["Wade Foster","Bryan Helmig"],
+ "amplitude": ["Spenser Skates","Frank Lee"],
+ "atlassian": ["Tanguy Crusson"],
+ "spotify": ["Nesrine Changuel"],
+ "netflix": ["Jyothi Nookula"]
+}
