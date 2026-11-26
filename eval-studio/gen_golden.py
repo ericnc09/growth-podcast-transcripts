@@ -55,7 +55,7 @@ def prd(p, flaws):
             L += [f"Risks we anticipate: the model may hallucinate, may show bias, or may be off-tone. We will write evals for each of these.", ""]
         else:
             obs = "; ".join(p["observed"])
-            L += [f"Before choosing metrics, we reviewed 100 {p['output']}s from the prototype and grouped what went wrong. "
+            L += [f"Before choosing metrics, we reviewed 100 {p['outputs']} from the prototype and grouped what went wrong. "
                   f"The most common failures were: {obs}. We repeat this review whenever we change the prompt or the model.", ""]
         L += [f"We will measure {p['generic_metrics'] if f('FM03') else p['specific_metrics']}.", ""]
         if f("FM06"):
@@ -65,7 +65,7 @@ def prd(p, flaws):
         if f("FM05"):
             L += ["An LLM judge scores every criterion automatically, so we don't need human reviewers in the loop.", ""]
         else:
-            L += [f"An LLM judge scores each criterion. Before we trust it, two of us label 100 {p['output']}s by hand, "
+            L += [f"An LLM judge scores each criterion. Before we trust it, two of us label 100 {p['outputs']} by hand, "
                   "and the judge must agree with our labels at least 90% of the time. We recheck agreement monthly.", ""]
         if f("FM07"):
             L += ["Launch bar: 98% or higher on the eval set, which is built from common, straightforward requests.", ""]
