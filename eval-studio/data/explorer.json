@@ -1,0 +1,259 @@
+{
+ "topics": [
+  {
+   "id": "vibes",
+   "title": "When are vibe checks enough?",
+   "summary": "Guests treat vibe checks as the first eval, and agree they stop working once more people use the product or more people work on it.",
+   "quotes": [
+    {
+     "speaker": "Ankur Goyal",
+     "file": "episodes/2026-03-20-ankur-goyal-podcast.md",
+     "ts": "00:02:10",
+     "quote": "I actually think vibe checks are a form of eval"
+    },
+    {
+     "speaker": "Shreya Shankar",
+     "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
+     "ts": "00:07:47",
+     "quote": "Your vibe checks are very important, but they don't scale because they involve you, the human."
+    },
+    {
+     "speaker": "Shreya Shankar",
+     "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
+     "ts": "00:07:02",
+     "quote": "I've never seen somebody make it through multiple iterations of their product without any evals."
+    }
+   ]
+  },
+  {
+   "id": "error-analysis",
+   "title": "How do you decide what to evaluate?",
+   "summary": "Start by reading real outputs, write notes on what went wrong, and group the notes into failure modes. Evals come after that.",
+   "quotes": [
+    {
+     "speaker": "Shreya Shankar",
+     "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
+     "ts": "00:59:41",
+     "quote": "after going through about 100 of those, they will try to merge similar notes together into clusters. And this determines your failure modes."
+    },
+    {
+     "speaker": "Hamel Husain",
+     "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
+     "ts": "01:04:24",
+     "quote": "you should be grounding it in things that are going wrong or the things that will probably go wrong."
+    },
+    {
+     "speaker": "Teresa Torres",
+     "file": "episodes/2025-08-12-teresa-torres-podcast.md",
+     "ts": "00:46:50",
+     "quote": "we're going to literally have humans review them and tag them where there are errors"
+    },
+    {
+     "speaker": "Teresa Torres",
+     "file": "episodes/2025-08-12-teresa-torres-podcast.md",
+     "ts": "00:47:42",
+     "quote": "for errors that are kind of persistent, I'm going to write an eval."
+    }
+   ]
+  },
+  {
+   "id": "judge",
+   "title": "How do you trust an LLM judge?",
+   "summary": "Label examples by hand, measure the judge against your labels, and fix the judge where it disagrees.",
+   "quotes": [
+    {
+     "speaker": "Hamel Husain",
+     "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
+     "ts": "01:08:29",
+     "quote": "80% of people who are using LLM as a judge are just writing a prompt and just praying that is doing the right thing."
+    },
+    {
+     "speaker": "Hamel Husain",
+     "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
+     "ts": "00:18:20",
+     "quote": "how do I make this judge a proxy of me? And how do I trust it? Almost like an employee."
+    },
+    {
+     "speaker": "Aman Khan",
+     "file": "episodes/2025-06-15-aman-khan-podcast.md",
+     "ts": "01:24:40",
+     "quote": "I don't see too many people actually, when they talk about evals saying that you need to check the work of the LLM as a judge"
+    },
+    {
+     "speaker": "Shreya Shankar",
+     "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
+     "ts": "01:09:34",
+     "quote": "people will keep changing the rubric as they encounter new failure modes when looking at the data."
+    }
+   ]
+  },
+  {
+   "id": "rubric",
+   "title": "Pass/fail or a 1-to-5 score?",
+   "summary": "Guests who build judges recommend binary criteria, because models apply them more reliably than fine-grained scales.",
+   "quotes": [
+    {
+     "speaker": "Shreya Shankar",
+     "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
+     "ts": "00:09:59",
+     "quote": "we say limit yourself to binary, because that is what the LLM can do very well."
+    },
+    {
+     "speaker": "Shreya Shankar",
+     "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
+     "ts": "00:07:47",
+     "quote": "In our course, we define that as a rubric of binary criteria."
+    },
+    {
+     "speaker": "Shreya Shankar",
+     "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
+     "ts": "00:05:29",
+     "quote": "I've never seen just one eval doing the job. I see three to five, sometimes even up to 10 evals that are really important for a product."
+    }
+   ]
+  },
+  {
+   "id": "dataset",
+   "title": "What goes in a golden dataset?",
+   "summary": "Inputs, optionally expected answers, and enough hard cases that the current system fails some of them.",
+   "quotes": [
+    {
+     "speaker": "Ankur Goyal",
+     "file": "episodes/2026-03-20-ankur-goyal-podcast.md",
+     "ts": "00:20:06",
+     "quote": "An eval consists of three things."
+    },
+    {
+     "speaker": "Daniel McKinnon",
+     "file": "episodes/2026-07-28-how-to-build-your-first-eval.md",
+     "ts": "00:03:29",
+     "quote": "Think about it as like a pre-baked set of trivia questions that you ask the model."
+    },
+    {
+     "speaker": "Daniel McKinnon",
+     "file": "episodes/2026-07-28-how-to-build-your-first-eval.md",
+     "ts": "00:26:34",
+     "quote": "you want to score like, you know, 25 to 50% on these evals."
+    },
+    {
+     "speaker": "Hamel Husain",
+     "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
+     "ts": "00:36:21",
+     "quote": "if you're getting 100% accuracy in your evals, it's likely your evals are worthless because they are providing you with no signal."
+    }
+   ]
+  },
+  {
+   "id": "online",
+   "title": "Offline or online evals?",
+   "summary": "Offline evals decide whether to ship. Online evals check whether users actually got what the offline set predicted.",
+   "quotes": [
+    {
+     "speaker": "Daniel McKinnon",
+     "file": "episodes/2026-07-28-how-to-build-your-first-eval.md",
+     "ts": "00:02:42",
+     "quote": "let's ship it into prod and see if they actually like it with an online eval."
+    },
+    {
+     "speaker": "Daniel McKinnon",
+     "file": "episodes/2026-07-28-how-to-build-your-first-eval.md",
+     "ts": "00:04:26",
+     "quote": "performance on that offline eval set will reflect the satisfaction of the user in the online eval. This obviously doesn't always happen"
+    },
+    {
+     "speaker": "Shreya Shankar",
+     "file": "episodes/2026-01-15-hamel-shreya-podcast-2.md",
+     "ts": "00:53:40",
+     "quote": "Every week or so, I'll sample some of my traces, run my LLM-powered evaluators on them, and then kind of just look at the score, see if anything's off or whatnot."
+    }
+   ]
+  },
+  {
+   "id": "cost",
+   "title": "How do evals change cost and latency decisions?",
+   "summary": "An eval set is what lets you try a cheaper model and know whether quality held. Latency is judged at p95, not on averages.",
+   "quotes": [
+    {
+     "speaker": "Ankit Shukla",
+     "file": "episodes/2026-02-19-ai-evals-explained-simply.md",
+     "ts": "00:15:33",
+     "quote": "They can let you understand whether a cheaper model can also go ahead and perform at a similar kind of level or not."
+    },
+    {
+     "speaker": "Ankit Shukla",
+     "file": "episodes/2026-02-19-ai-evals-explained-simply.md",
+     "ts": "00:13:53",
+     "quote": "because in prototypes we are using the best kind of models because we want to show the prototypes in the best light"
+    },
+    {
+     "speaker": "Ankit Shukla",
+     "file": "episodes/2026-02-19-ai-evals-explained-simply.md",
+     "ts": "00:50:28",
+     "quote": "we will have the latency so p50 p95 p99 means that whenever we do averaging averaging is not going to give you the right kind of results"
+    },
+    {
+     "speaker": "Hamel Husain",
+     "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
+     "ts": "01:05:28",
+     "quote": "evals are not free."
+    }
+   ]
+  },
+  {
+   "id": "agents",
+   "title": "How do you evaluate an agent?",
+   "summary": "Score whole tasks rather than single answers, and look at the steps, because that is where an agent's failures hide.",
+   "quotes": [
+    {
+     "speaker": "Daniel McKinnon",
+     "file": "episodes/2026-07-28-how-to-build-your-first-eval.md",
+     "ts": "00:13:35",
+     "quote": "this is a totally new paradigm of writing evals because you're no longer thinking about QA, you're thinking about tasks."
+    },
+    {
+     "speaker": "Ankur Goyal",
+     "file": "episodes/2026-03-20-ankur-goyal-podcast.md",
+     "ts": "00:46:20",
+     "quote": "I set it up to evaluate every step. Maybe you only want to evaluate the last step"
+    },
+    {
+     "speaker": "Aman Khan",
+     "file": "episodes/2025-06-15-aman-khan-podcast.md",
+     "ts": "00:53:42",
+     "quote": "it's a line of code that you implement on top of your functions."
+    }
+   ]
+  },
+  {
+   "id": "owner",
+   "title": "Who should own the evals?",
+   "summary": "Guests put the PM at the centre, because evals are where product judgment turns into something a team can run.",
+   "quotes": [
+    {
+     "speaker": "Hamel Husain",
+     "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
+     "ts": "00:00:02",
+     "quote": "evals give you a way as a PM to inject your taste and your judgment directly into the critical path of the AI product being developed."
+    },
+    {
+     "speaker": "Jake Brill",
+     "file": "episodes/2025-08-24-jake-brill-podcast.md",
+     "ts": "00:25:29",
+     "quote": "PMs oftentimes are the ones with the clearest vision of how the product should work in their head"
+    },
+    {
+     "speaker": "Ankur Goyal",
+     "file": "episodes/2026-03-20-ankur-goyal-podcast.md",
+     "ts": "00:07:49",
+     "quote": "I think the modern PRD is an eval."
+    },
+    {
+     "speaker": "Hamel Husain",
+     "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
+     "ts": "00:04:19",
+     "quote": "You don't want to give up that leverage because when you build that foundation of evals, you develop, you have immense leverage"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,886 @@
+<title>Dawson City</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: an instrument panel. A slim masthead with tabs, then dense, labelled panels; data in mono. */
+:root {
+  --bg: #f4f6f8; --panel: #ffffff; --ink: #141a22; --muted: #5a6573; --line: #dde2e8; --soft: #eef1f5;
+  --accent: #2f4bd8; --accent-soft: #e3e8ff;
+  --good: #1f8a5b; --good-soft: #dcf2e7; --bad: #c8362f; --bad-soft: #fbe3e1; --warn: #b7700a; --warn-soft: #fbeed6;
+  --na: #a3acb8;
+  --sans: "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1116; --panel: #161b22; --ink: #e6eaf0; --muted: #96a1ae; --line: #2a313b; --soft: #1d232c;
+  --accent: #8ea2ff; --accent-soft: #232c52;
+  --good: #4cc38a; --good-soft: #163527; --bad: #f2776f; --bad-soft: #3d1c1a; --warn: #e9a73c; --warn-soft: #3a2a10; --na: #5b6572;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0e1116; --panel: #161b22; --ink: #e6eaf0; --muted: #96a1ae; --line: #2a313b; --soft: #1d232c;
+  --accent: #8ea2ff; --accent-soft: #232c52;
+  --good: #4cc38a; --good-soft: #163527; --bad: #f2776f; --bad-soft: #3d1c1a; --warn: #e9a73c; --warn-soft: #3a2a10; --na: #5b6572;
+  color-scheme: dark; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1120px; margin: 0 auto; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.2; }
+h2 { font-size: 20px; font-weight: 600; }
+h3 { font-size: 15px; font-weight: 600; }
+p { margin: 0; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.eyebrow { font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+/* masthead */
+.mast { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; padding-block: 28px 0; }
+.brand h1 { font-size: 30px; font-weight: 700; letter-spacing: -.01em; }
+.brand p { color: var(--muted); max-width: 60ch; margin-top: 4px; }
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--line); margin-top: 20px; }
+.tab { appearance: none; background: none; border: 0; border-bottom: 2px solid transparent; padding: 10px 12px; font: inherit; font-weight: 500; color: var(--muted); cursor: pointer; }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.tab .k { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-right: 6px; }
+main { padding-block: 24px 48px; }
+.view { display: grid; gap: 20px; }
+
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: grid; gap: 14px; min-width: 0; }
+.panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px; }
+.panel-head p { max-width: 70ch; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+
+/* stat strip */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.stat { background: var(--panel); padding: 14px 16px; display: grid; gap: 2px; }
+.stat b { font-family: var(--mono); font-size: 22px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 12.5px; color: var(--muted); }
+
+/* controls */
+button.btn { appearance: none; font: inherit; font-weight: 600; font-size: 14px; border-radius: 8px; padding: 9px 14px; border: 1px solid var(--accent); background: var(--accent); color: var(--panel); cursor: pointer; }
+button.btn.ghost { background: transparent; color: var(--accent); }
+button.btn:disabled { opacity: .5; cursor: not-allowed; }
+select, textarea, input[type="text"] { font: inherit; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+textarea { width: 100%; font-family: var(--mono); font-size: 13px; line-height: 1.5; resize: vertical; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+label.field { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+.note { font-size: 13px; color: var(--muted); }
+.notice { border: 1px solid var(--line); background: var(--soft); border-radius: 8px; padding: 10px 12px; font-size: 13.5px; }
+.notice.err { border-color: var(--bad); background: var(--bad-soft); }
+.progress { height: 6px; background: var(--soft); border-radius: 99px; overflow: hidden; }
+.progress i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s; }
+
+/* chips */
+.chip { display: inline-flex; align-items: center; gap: 4px; font-family: var(--mono); font-size: 11.5px; font-weight: 500; padding: 2px 7px; border-radius: 99px; border: 1px solid var(--line); background: var(--soft); color: var(--muted); white-space: nowrap; }
+.chip.fail { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
+.chip.pass { background: var(--good-soft); color: var(--good); border-color: transparent; }
+.chip.na { color: var(--muted); }
+.chip.warn { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
+.chip.acc { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+
+/* matrix */
+.scroll { overflow-x: auto; }
+table.matrix { border-collapse: separate; border-spacing: 3px; font-size: 12px; }
+table.matrix th { font-family: var(--mono); font-weight: 500; color: var(--muted); white-space: nowrap; }
+table.matrix th.rowh { text-align: left; padding-right: 8px; font-family: var(--sans); color: var(--ink); font-weight: 500; }
+table.matrix th.colh { writing-mode: vertical-rl; transform: rotate(180deg); height: 92px; text-align: left; padding: 2px 0; font-size: 11px; }
+td.cell { width: 20px; height: 20px; min-width: 20px; border-radius: 4px; cursor: pointer; position: relative; border: 1px solid transparent; padding: 0; }
+td.cell.caught { background: var(--accent); }
+td.cell.clear { background: var(--soft); border-color: var(--line); }
+td.cell.missed { background: var(--bad); }
+td.cell.alarm { background: var(--warn); }
+td.cell.na { background: transparent; border: 1px dashed var(--na); }
+td.cell.lab-fail { background: var(--accent); }
+td.cell.split::after { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: var(--panel); }
+td.cell.sel { outline: 2px solid var(--ink); outline-offset: 1px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 14px; height: 14px; border-radius: 3px; display: inline-block; position: relative; }
+
+/* tables */
+table.data { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+table.data th { text-align: left; font-weight: 500; color: var(--muted); font-size: 12px; border-bottom: 1px solid var(--line); padding: 6px 8px; white-space: nowrap; }
+table.data td { border-bottom: 1px solid var(--line); padding: 8px; vertical-align: top; }
+table.data td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+table.data th.num { text-align: right; }
+
+/* quotes */
+.quote { border-left: 2px solid var(--accent); padding: 2px 0 2px 12px; display: grid; gap: 3px; }
+.quote q { quotes: "\201C" "\201D"; }
+.quote .src { font-size: 12.5px; color: var(--muted); }
+.quotes { display: grid; gap: 10px; }
+
+/* detail */
+.verdicts { display: grid; gap: 8px; }
+.verdict { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; align-items: start; padding: 8px 10px; background: var(--soft); border-radius: 8px; font-size: 13.5px; }
+.verdict .ev { grid-column: 2; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+pre.prd { white-space: pre-wrap; word-break: break-word; font-family: var(--mono); font-size: 12.5px; line-height: 1.55; background: var(--soft); border-radius: 8px; padding: 14px; max-height: 420px; overflow: auto; margin: 0; }
+pre.prompt { max-height: 300px; }
+
+/* council */
+.panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 16px; }
+.role { border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 12px; align-content: start; background: var(--panel); }
+.role header { display: grid; gap: 2px; }
+.finding { display: grid; gap: 6px; padding-top: 10px; border-top: 1px solid var(--line); }
+.finding .top { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+details summary { cursor: pointer; font-size: 13px; color: var(--accent); }
+details[open] summary { margin-bottom: 8px; }
+
+/* explorer */
+.topics { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+.topic { display: grid; gap: 12px; align-content: start; }
+
+.case-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+.case-btn { appearance: none; text-align: left; font: inherit; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; cursor: pointer; display: grid; gap: 4px; color: var(--ink); }
+.case-btn[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.case-btn .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+
+footer { border-top: 1px solid var(--line); padding-block: 20px 32px; font-size: 13px; color: var(--muted); display: grid; gap: 6px; }
+@media (max-width: 560px) { .brand h1 { font-size: 24px; } .panel { padding: 16px; } }
+@media (prefers-reduced-motion: reduce) { .progress i { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="brand">
+      <div class="eyebrow">Eval harness for AI feature PRDs</div>
+      <h1>Dawson City</h1>
+      <p>Judges that check a PRD for 10 known eval failures, a golden set to test those judges against, and every number behind them in plain view. Each failure mode is grounded in what guests of The Growth Podcast said, with timestamps.</p>
+    </div>
+  </header>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab" role="tab" id="tab-glass-box" data-view="glass-box"><span class="k">01</span>Glass box</button>
+    <button class="tab" role="tab" id="tab-judge" data-view="judge"><span class="k">02</span>Judge builder</button>
+    <button class="tab" role="tab" id="tab-review" data-view="review"><span class="k">03</span>Review a PRD</button>
+    <button class="tab" role="tab" id="tab-explore" data-view="explore"><span class="k">04</span>How AI PMs evaluate</button>
+  </nav>
+
+  <main>
+    <div id="loading" class="notice">Loading the golden set and evidence…</div>
+
+    <!-- 01 GLASS BOX -->
+    <section class="view" id="view-glass-box" hidden>
+      <div class="stats" id="stats"></div>
+
+      <div class="panel" id="run-panel">
+        <div class="panel-head">
+          <div><h2>Judge runs</h2>
+            <p class="muted small">Each run sends all 30 golden PRDs to the judge 3 times. Results are saved here, so everyone who opens this page sees the same numbers.</p></div>
+          <div class="row">
+            <label class="field">Results shown<select id="setup-select"></select></label>
+          </div>
+        </div>
+        <div id="run-controls" class="row"></div>
+        <div id="run-status" class="grid" style="display:grid;gap:8px"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div><h2 id="matrix-title">Golden labels</h2>
+            <p class="muted small" id="matrix-sub">Rows are failure modes, columns are the 30 test PRDs. Select a square for detail.</p></div>
+          <div class="row" role="group" aria-label="Matrix view">
+            <button class="btn ghost" id="mx-labels" aria-pressed="true">Labels</button>
+            <button class="btn ghost" id="mx-results" aria-pressed="false">Judge results</button>
+          </div>
+        </div>
+        <div class="legend" id="legend"></div>
+        <div class="scroll"><table class="matrix" id="matrix"></table></div>
+        <div id="cell-detail"></div>
+      </div>
+
+      <div class="grid2">
+        <div class="panel">
+          <div><h2>Reliability by failure mode</h2>
+            <p class="muted small">Majority of 3 runs against the label. Recall: share of planted flaws caught. Precision: share of flags that were real. Agreement: share of verdicts where all 3 runs matched.</p></div>
+          <div class="scroll"><table class="data" id="fm-table"></table></div>
+        </div>
+        <div class="panel">
+          <div><h2>Trade-offs: cost, latency, accuracy</h2>
+            <p class="muted small">One judge or three, fast tier or default tier, from the same saved runs. "×1" uses only the first run of each case.</p></div>
+          <div class="scroll"><table class="data" id="trade-table"></table></div>
+          <p class="note" id="price-note"></p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><div><h2>Golden dataset</h2>
+          <p class="muted small">30 fictional PRDs for 6 AI features. Each failure mode has a sound and a flawed version of the relevant passage; every PRD is assembled from those parts, so each label is exact by construction.</p></div></div>
+        <div class="case-list" id="case-list"></div>
+        <div id="case-view"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><div><h2>How the judge works</h2>
+          <p class="muted small">The model is the only part that can vary. Everything around it is code, and the same inputs always build the same prompt.</p></div></div>
+        <div class="grid2">
+          <div style="display:grid;gap:10px">
+            <h3>Fixed by code</h3>
+            <ul class="small" style="margin:0;padding-left:18px;display:grid;gap:4px">
+              <li>The prompt is compiled from the failure-mode definitions and the PRD. Its fingerprint is shown below.</li>
+              <li>Output must be JSON with all 10 keys and one of pass, fail or na. Anything else is recorded as a schema failure.</li>
+              <li>Every PRD passage the judge quotes is checked word for word against the PRD.</li>
+              <li>If the judge says there is no eval plan (FM01 fails), the eval-plan checks must be na. Violations are counted.</li>
+              <li>Answer caching is off, so 3 runs are 3 real answers.</li>
+            </ul>
+            <h3>Measured, not assumed</h3>
+            <p class="small">Current Claude models don't accept a temperature setting, so no judge is exactly repeatable. Instead the page runs each case 3 times and reports how often the runs agree.</p>
+          </div>
+          <div style="display:grid;gap:8px;min-width:0">
+            <div class="row"><span class="eyebrow">Judge prompt</span><span class="chip mono" id="prompt-hash"></span></div>
+            <pre class="prd prompt" id="prompt-preview"></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div><h2>Failure modes and their evidence</h2>
+          <p class="muted small">What each check looks for, and the guests whose words it rests on. Quotes are checked word for word against the transcripts; links open the episode about 15 seconds early.</p></div>
+        <div class="topics" id="fm-cards"></div>
+      </div>
+    </section>
+
+    <!-- 02 JUDGE BUILDER -->
+    <section class="view" id="view-judge" hidden>
+      <div class="panel">
+        <div class="panel-head"><div><h2>Judge builder</h2>
+          <p class="muted small">Rewrite one failure mode's definition and test it. The builder runs your judge 3 times on 10 golden PRDs and scores it against the labels.</p></div></div>
+        <div class="grid2">
+          <div style="display:grid;gap:12px;min-width:0">
+            <label class="field">Failure mode<select id="jb-mode"></select></label>
+            <label class="field">Fails when<textarea id="jb-check" rows="3"></textarea></label>
+            <label class="field">Passes when<textarea id="jb-pass" rows="3"></textarea></label>
+            <div class="row">
+              <label class="field">Judge tier<select id="jb-tier"><option value="quick">Fast (quick)</option><option value="default" selected>Default</option></select></label>
+              <button class="btn ghost" id="jb-reset" type="button">Reset to original</button>
+            </div>
+            <div class="row"><button class="btn" id="jb-run" type="button">Run 30 judge calls</button><span class="note" id="jb-note"></span></div>
+            <div class="progress" aria-hidden="true"><i id="jb-bar"></i></div>
+          </div>
+          <div style="display:grid;gap:8px;min-width:0">
+            <div class="row"><span class="eyebrow">Compiled prompt</span><span class="chip mono" id="jb-hash"></span><span class="note" id="jb-cases"></span></div>
+            <pre class="prd prompt" id="jb-prompt"></pre>
+          </div>
+        </div>
+      </div>
+      <div class="panel" id="jb-results-panel">
+        <div><h2>Results</h2><p class="muted small" id="jb-results-sub">Run the judge to see accuracy, agreement, latency and cost against the labels.</p></div>
+        <div class="stats" id="jb-stats"></div>
+        <div class="scroll"><table class="data" id="jb-table"></table></div>
+      </div>
+    </section>
+
+    <!-- 03 REVIEW -->
+    <section class="view" id="view-review" hidden>
+      <div class="panel">
+        <div class="panel-head"><div><h2>Review a PRD</h2>
+          <p class="muted small">Paste a PRD for an AI feature, or use the sample. The same judges run on it, and five reviewer roles report what they check. The roles are lenses, not people: the guests quoted below did not review your PRD and do not endorse this tool.</p></div></div>
+        <textarea id="rv-text" rows="14" aria-label="PRD text"></textarea>
+        <div class="row">
+          <button class="btn" id="rv-run1" type="button">Review with 1 judge</button>
+          <button class="btn ghost" id="rv-run3" type="button">Review with 3 judges</button>
+          <button class="btn ghost" id="rv-sample" type="button">Load the sample PRD</button>
+          <span class="note" id="rv-note"></span>
+        </div>
+      </div>
+      <div class="stats" id="rv-stats" hidden></div>
+      <div class="panels" id="rv-panels"></div>
+    </section>
+
+    <!-- 04 EXPLORER -->
+    <section class="view" id="view-explore" hidden>
+      <div class="panel">
+        <div><h2>How do top AI PMs evaluate…</h2>
+          <p class="muted small">Nine questions, answered with what guests said on The Growth Podcast. The one-line answers are summaries by this page, not quotes.</p></div>
+        <div class="row" id="ex-chips"></div>
+      </div>
+      <div class="topics" id="ex-topics"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Built on the transcripts of <a href="https://github.com/aakashg/growth-podcast-transcripts" target="_blank" rel="noopener">The Growth Podcast with Aakash Gupta</a>. Quotes are from machine transcripts of the aired audio and link to the moment in each episode. Guests are quoted as evidence only and do not endorse this tool.</p>
+    <p>Golden-set PRDs and the sample PRD describe fictional companies.</p>
+  </footer>
+</div>
+
+<script>
+"use strict";
+// ---------- tiny DOM helper (text only, never HTML strings) ----------
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  if (attrs) for (const [k, v] of Object.entries(attrs)) {
+    if (v == null || v === false) continue;
+    if (k === "class") el.className = v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else el.setAttribute(k, v === true ? "" : String(v));
+  }
+  for (const k of kids.flat()) if (k != null && k !== false) el.append(k instanceof Node ? k : String(k));
+  return el;
+}
+const $ = (id) => document.getElementById(id);
+const safeUrl = (u) => (typeof u === "string" && u.startsWith("https://")) ? u : null;
+
+// ---------- constants ----------
+const JUDGE_VERSION = "j1";
+const REPS = 3;
+const TIERS = { quick: { label: "Fast tier", model: "Claude Haiku 5.5", pin: 0.10, pout: 0.50 },
+                default: { label: "Default tier", model: "Claude Sonnet 5.5", pin: 2.00, pout: 10.00 } };
+const EVAL_DEPENDENT = ["FM03", "FM04", "FM05", "FM06", "FM07", "FM10"];
+const ROLES = [
+  { name: "Skeptical CPO", lens: "Is success defined, and can the evals show progress?", modes: ["FM02", "FM07"] },
+  { name: "AI platform PM", lens: "Can the judges be trusted?", modes: ["FM05", "FM06"] },
+  { name: "Research and quality lead", lens: "Are the failure modes real, and specific to this product?", modes: ["FM04", "FM03"] },
+  { name: "Growth leader", lens: "Is there a quality bar, and a loop after launch?", modes: ["FM01", "FM08"] },
+  { name: "Engineering and data partner", lens: "Can we afford it, and can we debug it?", modes: ["FM09", "FM10"] },
+];
+
+let DATA = null, MODES = [], MODE = {}, GOLD = [];
+let sampleApi = null, dbApi = null, userApi = null, canWrite = null;
+const store = { runs: {}, calls: [] };   // from db
+let matrixMode = "labels", selectedCell = null, selectedSetup = null, selectedCase = null;
+
+// ---------- deterministic pieces ----------
+function norm(s) { return String(s).replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/\s+/g, " ").trim().toLowerCase(); }
+function fnv(s) { let x = 0x811c9dc5; for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i); x = Math.imul(x, 0x01000193) >>> 0; } return x.toString(16).padStart(8, "0"); }
+
+function judgePrompt(prd, modes) {
+  const ids = modes.map(m => m.id);
+  return [
+    "You are an evaluation judge. You review a product requirements document (PRD) for an AI feature and check it for specific failure modes.",
+    "",
+    "For each failure mode, give one verdict:",
+    '- "fail": the PRD has this problem.',
+    '- "pass": the PRD avoids this problem.',
+    '- "na": the check cannot apply to this PRD. Agent-only checks do not apply to features that are not multi-step agents. Checks about the evaluation plan do not apply when the PRD has no evaluation plan at all.',
+    "",
+    "Rules:",
+    "- Judge only what the PRD says. Do not assume plans it does not state.",
+    '- "quote": copy the shortest exact passage from the PRD, at most 25 words, that decides the verdict. Use "" when the verdict rests on something missing.',
+    '- "why": one sentence, at most 25 words.',
+    "",
+    "Failure modes:",
+    ...modes.map(m => `${m.id} ${m.name}\n  Fails when: ${m.check}\n  Passes when: ${m.pass_if}`),
+    "",
+    `Reply with only a JSON object and no other text. Use exactly these keys: ${ids.join(", ")}. Each value is {"v": "pass" | "fail" | "na", "quote": string, "why": string}.`,
+    "",
+    "PRD:",
+    "<<<",
+    prd.trim(),
+    ">>>",
+  ].join("\n");
+}
+
+function parseJudge(text, prd, ids) {
+  const out = { verdicts: {}, schemaOk: false, quotes: 0, quotesFound: 0, inconsistent: 0, error: null };
+  const a = text.indexOf("{"), b = text.lastIndexOf("}");
+  if (a < 0 || b <= a) { out.error = "No JSON in the reply"; return out; }
+  let obj; try { obj = JSON.parse(text.slice(a, b + 1)); } catch { out.error = "Reply was not valid JSON"; return out; }
+  const np = norm(prd); let ok = true;
+  for (const id of ids) {
+    const r = obj && obj[id];
+    const v = r && typeof r.v === "string" ? r.v.toLowerCase().trim() : null;
+    if (!["pass", "fail", "na"].includes(v)) { ok = false; out.verdicts[id] = { v: "invalid", quote: "", why: "", found: null }; continue; }
+    const quote = typeof r.quote === "string" ? r.quote.slice(0, 400) : "";
+    const why = typeof r.why === "string" ? r.why.slice(0, 400) : "";
+    let found = null;
+    if (quote.trim()) { out.quotes++; found = np.includes(norm(quote.replace(/^\.\.\.|\.\.\.$/g, ""))); if (found) out.quotesFound++; }
+    out.verdicts[id] = { v, quote, why, found };
+  }
+  out.schemaOk = ok;
+  if (out.verdicts.FM01 && out.verdicts.FM01.v === "fail")
+    for (const id of EVAL_DEPENDENT) if (out.verdicts[id] && out.verdicts[id].v !== "na") out.inconsistent++;
+  return out;
+}
+
+async function callJudge(prd, modes, tier) {
+  const input = judgePrompt(prd, modes);
+  const t0 = performance.now();
+  const res = await sampleApi(input, { modelTier: tier, cache: false });
+  const latencyMs = Math.round(performance.now() - t0);
+  const parsed = parseJudge(res.text, prd, modes.map(m => m.id));
+  return { ...parsed, latencyMs, inChars: input.length, outChars: res.text.length, tierApplied: res.modelTierApplied || tier, truncated: !!res.truncated };
+}
+
+// a small pool with polite retry on rate limits
+async function pool(tasks, n, onDone, shouldStop) {
+  let i = 0;
+  async function worker() {
+    while (i < tasks.length && !shouldStop()) {
+      const t = tasks[i++];
+      let tries = 0;
+      for (;;) {
+        try { const r = await t.run(); await onDone(t, r, null); break; }
+        catch (e) {
+          if (e && e.code === "rate_limited" && tries < 3) { tries++; await new Promise(r => setTimeout(r, 20000 * tries)); continue; }
+          await onDone(t, null, e); break;
+        }
+      }
+    }
+  }
+  await Promise.all(Array.from({ length: n }, worker));
+}
+
+// ---------- metrics ----------
+function pct(x) { return x == null || isNaN(x) ? "–" : Math.round(x * 100) + "%"; }
+function quantile(arr, q) { if (!arr.length) return null; const s = [...arr].sort((a, b) => a - b); return s[Math.min(s.length - 1, Math.floor(q * (s.length - 1) + 0.5))]; }
+function secs(ms) { return ms == null ? "–" : (ms / 1000).toFixed(1) + " s"; }
+function money(x) { return x == null ? "–" : x < 0.01 ? "$" + x.toFixed(4) : "$" + x.toFixed(3); }
+
+function callsFor(setupId) { return store.calls.filter(c => c.runId === setupId && c.ok); }
+
+// grid[caseId][fm] = array of verdict strings (by rep order)
+function gridFrom(calls, reps) {
+  const g = {};
+  for (const c of calls) {
+    if (c.rep > reps) continue;
+    (g[c.caseId] ||= {});
+    for (const [fm, r] of Object.entries(c.verdicts || {})) ((g[c.caseId][fm] ||= [])[c.rep - 1] = r.v);
+  }
+  return g;
+}
+function majority(vs) {
+  const list = vs.filter(Boolean); if (!list.length) return null;
+  const n = {}; for (const v of list) n[v] = (n[v] || 0) + 1;
+  const best = Object.entries(n).sort((a, b) => b[1] - a[1]);
+  if (best.length > 1 && best[0][1] === best[1][1]) return "split";
+  return best[0][0];
+}
+function scoreModes(grid, modes, cases, reps) {
+  const rows = {};
+  for (const m of modes) {
+    let n = 0, right = 0, tp = 0, fn = 0, fp = 0, agreeN = 0, agree = 0;
+    for (const c of cases) {
+      const vs = grid[c.id] && grid[c.id][m.id]; if (!vs || !vs.filter(Boolean).length) continue;
+      const lab = c.labels[m.id], maj = majority(vs);
+      n++; if (maj === lab) right++;
+      if (lab === "fail") { if (maj === "fail") tp++; else fn++; }
+      else if (maj === "fail") fp++;
+      if (reps > 1 && vs.filter(Boolean).length === reps) { agreeN++; if (new Set(vs).size === 1) agree++; }
+    }
+    rows[m.id] = { n, acc: n ? right / n : null, recall: tp + fn ? tp / (tp + fn) : null, precision: tp + fp ? tp / (tp + fp) : null,
+                   agree: agreeN ? agree / agreeN : null, tp, fn, fp };
+  }
+  return rows;
+}
+function overall(rows) {
+  let n = 0, acc = 0, ag = 0, agn = 0, tp = 0, fn = 0, fp = 0;
+  for (const r of Object.values(rows)) { if (!r.n) continue; n += r.n; acc += r.acc * r.n; tp += r.tp; fn += r.fn; fp += r.fp; if (r.agree != null) { ag += r.agree * r.n; agn += r.n; } }
+  return { acc: n ? acc / n : null, agree: agn ? ag / agn : null, recall: tp + fn ? tp / (tp + fn) : null, precision: tp + fp ? tp / (tp + fp) : null };
+}
+function costOf(calls, tier) {
+  const p = TIERS[tier] || TIERS.default;
+  if (!calls.length) return { tin: null, tout: null, cost: null };
+  const tin = calls.reduce((s, c) => s + c.inChars, 0) / calls.length / 4;
+  const tout = calls.reduce((s, c) => s + c.outChars, 0) / calls.length / 4;
+  return { tin, tout, cost: (tin * p.pin + tout * p.pout) / 1e6 };
+}
+
+// ---------- rendering: glass box ----------
+function setupIds() {
+  const ids = new Set(Object.keys(store.runs));
+  for (const c of store.calls) ids.add(c.runId);
+  return [...ids].sort();
+}
+function tierOf(setupId) { return setupId.split("-")[0]; }
+function setupLabel(id) { const t = TIERS[tierOf(id)]; return (t ? t.label : id) + " · judge " + id.split("-")[1]; }
+
+function renderStats() {
+  const s = $("stats"); s.replaceChildren();
+  const calls = selectedSetup ? callsFor(selectedSetup) : [];
+  const grid = gridFrom(calls, REPS), rows = scoreModes(grid, MODES, GOLD, REPS), o = overall(rows);
+  const lat = calls.map(c => c.latencyMs), cost = costOf(calls, selectedSetup ? tierOf(selectedSetup) : "default");
+  const stat = (b, span) => h("div", { class: "stat" }, h("b", null, b), h("span", null, span));
+  s.append(
+    stat(String(GOLD.length), "golden PRDs, 6 fictional features"),
+    stat(String(MODES.length), "failure modes, " + MODES.reduce((n, m) => n + m.quotes.length, 0) + " verified quotes"),
+    stat(calls.length ? String(calls.length) : "0", "judge calls saved for this setup"),
+    stat(pct(o.acc), "accuracy, majority of 3"),
+    stat(pct(o.agree), "run-to-run agreement"),
+    stat(secs(quantile(lat, 0.95)), "p95 latency per call"),
+    stat(cost.cost == null ? "–" : money(cost.cost * REPS), "est. cost per review, 3 judges"),
+  );
+}
+
+function renderSetupSelect() {
+  const sel = $("setup-select"); const ids = setupIds();
+  sel.replaceChildren(...(ids.length ? ids.map(id => h("option", { value: id }, setupLabel(id))) : [h("option", { value: "" }, "No runs yet")]));
+  if (!selectedSetup || !ids.includes(selectedSetup)) selectedSetup = ids.find(id => callsFor(id).length) || ids[0] || null;
+  if (selectedSetup) sel.value = selectedSetup;
+  sel.disabled = !ids.length;
+}
+
+let running = false, stopFlag = false;
+function renderRunControls() {
+  const box = $("run-controls"); box.replaceChildren();
+  if (!sampleApi) {
+    box.append(h("p", { class: "note" }, "Running the judges needs this page open on claude.ai, signed in. The saved results below are still readable."));
+    return;
+  }
+  if (canWrite === false) {
+    box.append(h("p", { class: "note" }, "You can read these results. Saving new runs needs edit access to this page; the Judge builder and Review tabs still run for you."));
+    return;
+  }
+  const tierSel = h("select", { id: "run-tier", "aria-label": "Judge tier" },
+    h("option", { value: "quick" }, "Fast tier"), h("option", { value: "default" }, "Default tier"));
+  const btn = h("button", { class: "btn", type: "button", id: "run-btn" });
+  const stop = h("button", { class: "btn ghost", type: "button", hidden: !running }, "Stop");
+  const updateLabel = () => {
+    const id = tierSel.value + "-" + JUDGE_VERSION;
+    const done = new Set(store.calls.filter(c => c.runId === id && c.ok).map(c => c.caseId + "#" + c.rep));
+    const left = GOLD.length * REPS - done.size;
+    btn.textContent = running ? "Running…" : left === 0 ? "Run complete" : done.size ? `Resume: ${left} calls left` : `Run golden set (${left} calls)`;
+    btn.disabled = running || left === 0;
+  };
+  tierSel.addEventListener("change", updateLabel);
+  btn.addEventListener("click", () => runGolden(tierSel.value));
+  stop.addEventListener("click", () => { stopFlag = true; stop.disabled = true; });
+  box.append(h("label", { class: "field" }, "Judge tier", tierSel), btn, stop,
+    h("span", { class: "note" }, "Uses your Claude account. About 3 to 6 minutes."));
+  updateLabel();
+}
+
+async function runGolden(tier) {
+  const runId = tier + "-" + JUDGE_VERSION;
+  const status = $("run-status");
+  const done = new Set(store.calls.filter(c => c.runId === runId && c.ok).map(c => c.caseId + "#" + c.rep));
+  const tasks = [];
+  for (let rep = 1; rep <= REPS; rep++) for (const c of GOLD) if (!done.has(c.id + "#" + rep))
+    tasks.push({ c, rep, run: () => callJudge(c.prd, MODES, tier) });
+  if (!tasks.length) return;
+  running = true; stopFlag = false; renderRunControls();
+  const bar = h("i"); let n = 0, errs = 0;
+  const msg = h("p", { class: "note" }, `0 of ${tasks.length} calls done`);
+  const errBox = h("div");
+  status.replaceChildren(h("div", { class: "progress" }, bar), msg, errBox);
+  try { await dbApi.doc("runs/" + runId).set({ tier, judge: JUDGE_VERSION, reps: REPS, cases: GOLD.length, startedAt: new Date().toISOString() }); } catch (e) { /* the runs doc is a convenience */ }
+  await pool(tasks, 2, async (t, r, e) => {
+    n++;
+    if (e && (e.code === "not_granted" || e.code === "sampling_disabled")) { stopFlag = true; errBox.replaceChildren(h("div", { class: "notice err" }, "Claude access was declined or is turned off for this page, so the run stopped.")); return; }
+    const doc = { runId, caseId: t.c.id, rep: t.rep, ok: !e && r && r.schemaOk, at: new Date().toISOString() };
+    if (r) Object.assign(doc, { verdicts: r.verdicts, latencyMs: r.latencyMs, inChars: r.inChars, outChars: r.outChars, tierApplied: r.tierApplied,
+      quotes: r.quotes, quotesFound: r.quotesFound, inconsistent: r.inconsistent, truncated: r.truncated, error: r.error });
+    if (e) { doc.error = (e && e.code) || "error"; errs++; }
+    else if (!doc.ok) errs++;
+    try { await dbApi.doc(`calls/${runId}_${t.c.id}_${t.rep}`).set(doc); } catch (err) { errs++; }
+    bar.style.width = (100 * n / tasks.length) + "%";
+    msg.textContent = `${n} of ${tasks.length} calls done` + (errs ? ` · ${errs} failed (they can be retried with Resume)` : "");
+  }, () => stopFlag);
+  running = false; selectedSetup = runId; matrixMode = "results";
+  renderAll();
+}
+
+function cellClass(c, m) {
+  const lab = c.labels[m.id];
+  if (matrixMode === "labels") return lab === "fail" ? "lab-fail" : lab === "na" ? "na" : "clear";
+  const vs = selectedSetup && GRID[c.id] && GRID[c.id][m.id];
+  if (!vs || !vs.filter(Boolean).length) return lab === "na" ? "na" : "clear";
+  const maj = majority(vs); let k;
+  if (lab === "na") k = maj === "na" ? "na" : "alarm";
+  else if (lab === "fail") k = maj === "fail" ? "caught" : "missed";
+  else k = maj === "fail" ? "alarm" : maj === "pass" ? "clear" : "alarm";
+  if (vs.filter(Boolean).length > 1 && new Set(vs.filter(Boolean)).size > 1) k += " split";
+  return k;
+}
+let GRID = {};
+function renderMatrix() {
+  GRID = selectedSetup ? gridFrom(callsFor(selectedSetup), REPS) : {};
+  const hasResults = selectedSetup && callsFor(selectedSetup).length;
+  if (matrixMode === "results" && !hasResults) matrixMode = "labels";
+  $("mx-labels").setAttribute("aria-pressed", String(matrixMode === "labels"));
+  $("mx-results").setAttribute("aria-pressed", String(matrixMode === "results"));
+  $("mx-results").disabled = !hasResults;
+  $("matrix-title").textContent = matrixMode === "labels" ? "Golden labels" : "Judge results against the labels";
+  const lg = $("legend"); lg.replaceChildren();
+  const sw = (cls, txt) => h("span", null, h("i", { class: "sw cell " + cls, style: "display:inline-block" }), txt);
+  const swatch = (bg, txt, extra) => h("span", null, h("i", { class: "sw", style: `background:${bg};${extra || ""}` }), txt);
+  if (matrixMode === "labels") lg.append(swatch("var(--accent)", "flaw planted"), swatch("var(--soft)", "sound", "border:1px solid var(--line)"), swatch("transparent", "does not apply", "border:1px dashed var(--na)"));
+  else lg.append(swatch("var(--accent)", "flaw caught"), swatch("var(--bad)", "flaw missed"), swatch("var(--warn)", "false alarm"), swatch("var(--soft)", "correctly passed", "border:1px solid var(--line)"), swatch("transparent", "does not apply", "border:1px dashed var(--na)"),
+    h("span", null, h("i", { class: "sw", style: "background:var(--muted);box-shadow:inset 0 0 0 4px var(--muted);border-radius:50%;width:10px;height:10px;outline:3px solid var(--soft)" }), "hollow centre: the 3 runs disagreed"));
+  const t = $("matrix"); t.replaceChildren();
+  const head = h("tr", null, h("th"), GOLD.map(c => h("th", { class: "colh", scope: "col" }, c.id)));
+  t.append(h("thead", null, head));
+  const body = h("tbody");
+  for (const m of MODES) {
+    const tr = h("tr", null, h("th", { class: "rowh", scope: "row" }, h("span", { class: "mono muted" }, m.id + " "), m.name));
+    for (const c of GOLD) {
+      const sel = selectedCell && selectedCell.c === c.id && selectedCell.m === m.id;
+      const td = h("td", { class: "cell " + cellClass(c, m) + (sel ? " sel" : ""), tabindex: 0, role: "button",
+        "aria-label": `${m.id} on ${c.id}: label ${c.labels[m.id]}` });
+      const pick = () => { selectedCell = { c: c.id, m: m.id }; renderMatrix(); renderCellDetail(); };
+      td.addEventListener("click", pick);
+      td.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
+      tr.append(td);
+    }
+    body.append(tr);
+  }
+  t.append(body);
+}
+
+function verdictChip(v) { return h("span", { class: "chip " + (v === "fail" ? "fail" : v === "pass" ? "pass" : v === "na" ? "na" : "warn") }, v === "na" ? "n/a" : v || "–"); }
+
+function renderCellDetail() {
+  const box = $("cell-detail"); box.replaceChildren();
+  if (!selectedCell) return;
+  const c = GOLD.find(x => x.id === selectedCell.c), m = MODE[selectedCell.m];
+  const calls = selectedSetup ? callsFor(selectedSetup).filter(x => x.caseId === c.id).sort((a, b) => a.rep - b.rep) : [];
+  const list = h("div", { class: "verdicts" });
+  for (const call of calls) {
+    const r = call.verdicts[m.id] || {};
+    list.append(h("div", { class: "verdict" }, h("span", { class: "mono small muted" }, "run " + call.rep), h("div", null, verdictChip(r.v), " ", r.why || ""),
+      r.quote ? h("div", { class: "ev" }, "PRD: “" + r.quote + "” ", r.found ? "· found in PRD" : "· not found in PRD") : null));
+  }
+  box.append(h("div", { class: "panel", style: "background:var(--soft);border-style:dashed" },
+    h("div", { class: "row" }, h("h3", null, `${m.id} ${m.name} · ${c.title} (${c.id})`), h("span", { class: "note" }, "Label "), verdictChip(c.labels[m.id])),
+    h("p", { class: "small" }, h("b", null, "Fails when: "), m.check),
+    calls.length ? list : h("p", { class: "note" }, matrixMode === "labels" ? "Switch to Judge results to see what the judge said." : "No saved judge calls for this case yet."),
+    h("div", { class: "row" }, h("button", { class: "btn ghost", type: "button", onclick: () => { selectedCase = c.id; renderCases(); $("case-view").scrollIntoView({ behavior: "smooth", block: "start" }); } }, "Read this PRD"))));
+}
+
+function renderFmTable() {
+  const t = $("fm-table"); t.replaceChildren();
+  const calls = selectedSetup ? callsFor(selectedSetup) : [];
+  const rows = scoreModes(gridFrom(calls, REPS), MODES, GOLD, REPS);
+  t.append(h("thead", null, h("tr", null, h("th", null, "Failure mode"), h("th", { class: "num" }, "Planted"), h("th", { class: "num" }, "Recall"), h("th", { class: "num" }, "Precision"), h("th", { class: "num" }, "Agreement"))));
+  const b = h("tbody");
+  for (const m of MODES) {
+    const r = rows[m.id]; const planted = GOLD.filter(c => c.labels[m.id] === "fail").length;
+    const flag = r.agree != null && r.agree < 0.8 ? h("span", { class: "chip warn", title: "Runs disagree often" }, "unstable") : null;
+    b.append(h("tr", null, h("td", null, h("span", { class: "mono muted" }, m.id + " "), m.name, " ", flag),
+      h("td", { class: "num" }, String(planted)), h("td", { class: "num" }, pct(r.recall)), h("td", { class: "num" }, pct(r.precision)), h("td", { class: "num" }, pct(r.agree))));
+  }
+  t.append(b);
+}
+
+function renderTradeTable() {
+  const t = $("trade-table"); t.replaceChildren();
+  t.append(h("thead", null, h("tr", null, h("th", null, "Setup"), h("th", { class: "num" }, "Accuracy"), h("th", { class: "num" }, "Recall"), h("th", { class: "num" }, "p50"), h("th", { class: "num" }, "p95"), h("th", { class: "num" }, "Tokens / review"), h("th", { class: "num" }, "Cost / review"))));
+  const b = h("tbody"); let any = false;
+  for (const id of setupIds()) {
+    const calls = callsFor(id); if (!calls.length) continue; any = true;
+    const tier = tierOf(id);
+    for (const reps of [1, REPS]) {
+      const sub = calls.filter(c => c.rep <= reps);
+      const o = overall(scoreModes(gridFrom(sub, reps), MODES, GOLD, reps));
+      const lat = calls.filter(c => c.rep === 1).map(c => c.latencyMs);
+      const co = costOf(sub, tier);
+      b.append(h("tr", null, h("td", null, (TIERS[tier] ? TIERS[tier].label : tier) + " ×" + reps),
+        h("td", { class: "num" }, pct(o.acc)), h("td", { class: "num" }, pct(o.recall)),
+        h("td", { class: "num" }, secs(quantile(lat, 0.5))), h("td", { class: "num" }, secs(quantile(lat, 0.95))),
+        h("td", { class: "num" }, co.tin == null ? "–" : Math.round((co.tin + co.tout) * reps).toLocaleString()),
+        h("td", { class: "num" }, co.cost == null ? "–" : money(co.cost * reps))));
+    }
+  }
+  if (!any) b.append(h("tr", null, h("td", { colspan: 7, class: "note" }, "No saved runs yet. Run the golden set on the fast and default tiers to fill this table.")));
+  t.append(b);
+  $("price-note").textContent = "Latency is measured per call; three judges run in parallel, so a 3-judge review takes about as long as its slowest call. Tokens are estimated at 4 characters per token. Cost assumes list prices of the model each tier usually maps to: fast tier as " + TIERS.quick.model + " ($" + TIERS.quick.pin + " in / $" + TIERS.quick.pout + " out per million tokens), default tier as " + TIERS.default.model + " ($" + TIERS.default.pin + " / $" + TIERS.default.pout + "). The page cannot see which model answered.";
+}
+
+function renderCases() {
+  const list = $("case-list"); list.replaceChildren();
+  for (const c of GOLD) {
+    const b = h("button", { class: "case-btn", type: "button", "aria-pressed": String(selectedCase === c.id) },
+      h("span", { class: "mono small" }, c.id), h("span", { class: "small" }, c.title + (c.agent ? " · agent" : "")),
+      h("span", { class: "chips" }, c.planted.length ? c.planted.map(p => h("span", { class: "chip acc", title: MODE[p].name }, p)) : h("span", { class: "chip pass" }, "clean")));
+    b.addEventListener("click", () => { selectedCase = selectedCase === c.id ? null : c.id; renderCases(); });
+    list.append(b);
+  }
+  const v = $("case-view"); v.replaceChildren();
+  const c = GOLD.find(x => x.id === selectedCase); if (!c) return;
+  v.append(h("div", { style: "display:grid;gap:10px" },
+    h("div", { class: "row" }, h("h3", null, c.title + " · " + c.id), ...MODES.map(m => h("span", { class: "chip " + (c.labels[m.id] === "fail" ? "fail" : c.labels[m.id] === "na" ? "na" : "pass"), title: m.name }, m.id + " " + (c.labels[m.id] === "na" ? "n/a" : c.labels[m.id])))),
+    h("pre", { class: "prd" }, c.prd)));
+}
+
+function quoteEl(q) {
+  const url = safeUrl(q.youtube);
+  return h("div", { class: "quote" }, h("q", null, q.quote),
+    h("span", { class: "src" }, q.speaker + " · ", url ? h("a", { href: url, target: "_blank", rel: "noopener" }, q.ts) : q.ts, " · " + q.episode));
+}
+function renderFmCards() {
+  const box = $("fm-cards"); box.replaceChildren();
+  for (const m of MODES) box.append(h("div", { class: "panel topic" },
+    h("div", null, h("div", { class: "eyebrow" }, m.id), h("h3", null, m.name)),
+    h("p", { class: "small" }, h("b", null, "Fails when: "), m.check),
+    h("p", { class: "small" }, h("b", null, "Passes when: "), m.pass_if),
+    h("div", { class: "quotes" }, m.quotes.map(quoteEl))));
+}
+
+function renderPrompt() {
+  const p = judgePrompt("[the PRD text goes here]", MODES);
+  $("prompt-preview").textContent = p;
+  $("prompt-hash").textContent = "judge " + JUDGE_VERSION + " · fingerprint " + fnv(p);
+}
+
+function renderAll() {
+  renderSetupSelect(); renderStats(); renderRunControls(); renderMatrix(); renderCellDetail(); renderFmTable(); renderTradeTable(); renderCases();
+}
+
+// ---------- judge builder ----------
+let jbRunning = false;
+function jbMode() { const base = MODE[$("jb-mode").value]; return { ...base, check: $("jb-check").value.trim() || base.check, pass_if: $("jb-pass").value.trim() || base.pass_if }; }
+function jbCases(id) {
+  const fails = GOLD.filter(c => c.labels[id] === "fail");
+  const nas = GOLD.filter(c => c.labels[id] === "na").slice(0, 1);
+  const passes = GOLD.filter(c => c.labels[id] === "pass");
+  return [...fails, ...nas, ...passes].slice(0, 10);
+}
+function jbRefresh() {
+  const m = jbMode(); const p = judgePrompt("[the PRD text goes here]", [m]);
+  $("jb-prompt").textContent = p; $("jb-hash").textContent = "fingerprint " + fnv(p);
+  const cs = jbCases(m.id);
+  $("jb-cases").textContent = `${cs.length} cases: ${cs.filter(c => c.labels[m.id] === "fail").length} with the flaw planted`;
+  const edited = m.check !== MODE[m.id].check || m.pass_if !== MODE[m.id].pass_if;
+  $("jb-note").textContent = edited ? "Edited definition" : "Original definition";
+  $("jb-run").disabled = jbRunning || !sampleApi;
+  if (!sampleApi) $("jb-note").textContent = "Running needs this page open on claude.ai, signed in.";
+}
+function jbLoad() { const m = MODE[$("jb-mode").value]; $("jb-check").value = m.check; $("jb-pass").value = m.pass_if; jbRefresh(); }
+async function jbRun() {
+  const m = jbMode(), tier = $("jb-tier").value, cases = jbCases(m.id);
+  const tasks = []; for (let rep = 1; rep <= REPS; rep++) for (const c of cases) tasks.push({ c, rep, run: () => callJudge(c.prd, [m], tier) });
+  jbRunning = true; jbRefresh(); $("jb-run").textContent = "Running…";
+  const results = []; let n = 0;
+  await pool(tasks, 2, async (t, r, e) => {
+    n++; $("jb-bar").style.width = (100 * n / tasks.length) + "%";
+    if (e && e.code === "not_granted") { $("jb-note").textContent = "Claude access was declined for this page."; return; }
+    results.push({ caseId: t.c.id, rep: t.rep, ok: !!(r && r.schemaOk), verdicts: r ? r.verdicts : {}, latencyMs: r ? r.latencyMs : null, inChars: r ? r.inChars : 0, outChars: r ? r.outChars : 0, quotes: r ? r.quotes : 0, quotesFound: r ? r.quotesFound : 0 });
+  }, () => false);
+  jbRunning = false; $("jb-run").textContent = "Run 30 judge calls"; jbRefresh();
+  jbRender(m, tier, cases, results);
+}
+function jbRender(m, tier, cases, results) {
+  const ok = results.filter(r => r.ok);
+  const grid = gridFrom(ok, REPS), row = scoreModes(grid, [m], cases, REPS)[m.id];
+  const lat = ok.map(r => r.latencyMs), co = costOf(ok, tier);
+  const q = ok.reduce((s, r) => s + r.quotes, 0), qf = ok.reduce((s, r) => s + r.quotesFound, 0);
+  const stat = (b, span) => h("div", { class: "stat" }, h("b", null, b), h("span", null, span));
+  $("jb-results-sub").textContent = `${m.id} ${m.name} · ${TIERS[tier].label} · ${ok.length} of ${results.length} calls returned valid JSON`;
+  $("jb-stats").replaceChildren(stat(pct(row.acc), "accuracy against labels"), stat(pct(row.recall), "recall on planted flaws"), stat(pct(row.precision), "precision"),
+    stat(pct(row.agree), "agreement across 3 runs"), stat(q ? pct(qf / q) : "–", "quoted passages found in the PRD"), stat(secs(quantile(lat, 0.95)), "p95 latency"), stat(money(co.cost), "est. cost per call"));
+  const t = $("jb-table"); t.replaceChildren(h("thead", null, h("tr", null, h("th", null, "Case"), h("th", null, "Label"), h("th", null, "Run 1"), h("th", null, "Run 2"), h("th", null, "Run 3"), h("th", null, "Majority"), h("th", null, "Why (run 1)"))));
+  const b = h("tbody");
+  for (const c of cases) {
+    const vs = (grid[c.id] && grid[c.id][m.id]) || [];
+    const maj = majority(vs); const r1 = ok.find(r => r.caseId === c.id && r.rep === 1);
+    b.append(h("tr", null, h("td", { class: "mono small" }, c.id), h("td", null, verdictChip(c.labels[m.id])),
+      [0, 1, 2].map(i => h("td", null, verdictChip(vs[i]))), h("td", null, verdictChip(maj), maj === c.labels[m.id] ? " ✓" : " ✗"),
+      h("td", { class: "small" }, r1 && r1.verdicts[m.id] ? r1.verdicts[m.id].why : "")));
+  }
+  t.append(b);
+}
+
+// ---------- review (council) ----------
+let rvRunning = false;
+async function rvRun(reps) {
+  const prd = $("rv-text").value.trim();
+  if (prd.length < 200) { $("rv-note").textContent = "Paste a full PRD first: at least a few paragraphs."; return; }
+  if (!sampleApi) { $("rv-note").textContent = "Reviewing needs this page open on claude.ai, signed in."; return; }
+  rvRunning = true; ["rv-run1", "rv-run3"].forEach(id => $(id).disabled = true);
+  $("rv-note").textContent = reps > 1 ? "Running 3 judges…" : "Running the judge…";
+  const t0 = performance.now(); const out = [];
+  await pool(Array.from({ length: reps }, (_, i) => ({ rep: i + 1, run: () => callJudge(prd, MODES, "default") })), 3, async (t, r, e) => {
+    if (e) { $("rv-note").textContent = e.code === "not_granted" ? "Claude access was declined for this page." : "A judge call failed: " + (e.message || e.code || "unknown error"); return; }
+    out.push({ ...r, rep: t.rep });
+  }, () => false);
+  const wall = Math.round(performance.now() - t0);
+  rvRunning = false; ["rv-run1", "rv-run3"].forEach(id => $(id).disabled = false);
+  if (!out.length) return;
+  $("rv-note").textContent = "";
+  rvRender(prd, out, wall);
+}
+function rvRender(prd, out, wall) {
+  const isSample = norm(prd) === norm(DATA.sample.prd);
+  const majFor = (id) => majority(out.map(o => o.verdicts[id] && o.verdicts[id].v));
+  const ids = MODES.map(m => m.id);
+  const fails = ids.filter(id => majFor(id) === "fail").length, applicable = ids.filter(id => majFor(id) !== "na").length;
+  const q = out.reduce((s, o) => s + o.quotes, 0), qf = out.reduce((s, o) => s + o.quotesFound, 0);
+  const co = costOf(out.map(o => ({ inChars: o.inChars, outChars: o.outChars })), "default");
+  const stat = (b, span) => h("div", { class: "stat" }, h("b", null, b), h("span", null, span));
+  const st = $("rv-stats"); st.hidden = false;
+  st.replaceChildren(stat(`${fails} of ${applicable}`, "checks failed"), stat(String(out.length), out.length > 1 ? "judges, majority vote" : "judge"),
+    stat(q ? pct(qf / q) : "–", "of quoted PRD passages found word for word"), stat(secs(wall), "wall-clock time"), stat(money(co.cost * out.length), "est. cost (default tier)"));
+  const panels = $("rv-panels"); panels.replaceChildren();
+  for (const role of ROLES) {
+    const card = h("article", { class: "role" }, h("header", null, h("div", { class: "eyebrow" }, "Reviewer role"), h("h3", null, role.name), h("p", { class: "small muted" }, role.lens)));
+    for (const id of role.modes) {
+      const m = MODE[id]; const maj = majFor(id);
+      const first = out.map(o => o.verdicts[id]).find(r => r && r.v === maj) || {};
+      const agreeTxt = out.length > 1 ? `${out.filter(o => o.verdicts[id] && o.verdicts[id].v === maj).length}/${out.length} judges` : null;
+      const exp = isSample ? DATA.sample.expected[id] : null;
+      card.append(h("div", { class: "finding" },
+        h("div", { class: "top" }, verdictChip(maj), h("b", { class: "small" }, m.name), agreeTxt ? h("span", { class: "chip" }, agreeTxt) : null,
+          exp ? h("span", { class: "chip " + (exp === maj ? "pass" : "warn"), title: "What was planted in the sample PRD" }, "planted: " + (exp === "na" ? "n/a" : exp)) : null),
+        first.why ? h("p", { class: "small" }, first.why) : null,
+        first.quote ? h("p", { class: "small mono muted" }, "“" + first.quote + "”", first.found ? " · found in your PRD" : " · not found word for word in your PRD") : null,
+        maj === "fail" || maj === "split" ? h("details", null, h("summary", null, "What guests said"), h("div", { class: "quotes" }, m.quotes.map(quoteEl))) : null));
+    }
+    panels.append(card);
+  }
+}
+
+// ---------- explorer ----------
+function renderExplorer() {
+  const chips = $("ex-chips"), box = $("ex-topics"); chips.replaceChildren(); box.replaceChildren();
+  for (const t of DATA.topics) {
+    chips.append(h("a", { class: "chip", href: "#explore", onclick: (e) => { e.preventDefault(); const el = $("topic-" + t.id); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } }, t.title));
+    box.append(h("div", { class: "panel topic", id: "topic-" + t.id }, h("h3", null, t.title), h("p", { class: "small muted" }, t.summary), h("div", { class: "quotes" }, t.quotes.map(quoteEl))));
+  }
+}
+
+// ---------- routing ----------
+const VIEWS = ["glass-box", "judge", "review", "explore"];
+function show(view) {
+  if (!VIEWS.includes(view)) view = "glass-box";
+  for (const v of VIEWS) { $("view-" + v).hidden = v !== view; $("tab-" + v).setAttribute("aria-selected", String(v === view)); }
+}
+for (const v of VIEWS) $("tab-" + v).addEventListener("click", () => { if (location.hash !== "#" + v) location.hash = v; else show(v); });
+window.addEventListener("hashchange", () => show(location.hash.slice(1)));
+
+// ---------- boot ----------
+async function boot() {
+  try {
+    const res = await fetch("data.json"); if (!res.ok) throw new Error("HTTP " + res.status);
+    DATA = await res.json();
+  } catch (e) {
+    $("loading").className = "notice err"; $("loading").textContent = "The golden set could not be loaded. Reload the page to try again."; return;
+  }
+  MODES = DATA.modes; MODES.forEach(m => MODE[m.id] = m); GOLD = DATA.golden;
+  $("loading").remove();
+  selectedCase = "sales-4";
+  renderAll(); renderFmCards(); renderPrompt(); renderExplorer();
+  $("jb-mode").replaceChildren(...MODES.map(m => h("option", { value: m.id }, m.id + " " + m.name)));
+  $("jb-mode").addEventListener("change", jbLoad);
+  $("jb-check").addEventListener("input", jbRefresh); $("jb-pass").addEventListener("input", jbRefresh);
+  $("jb-reset").addEventListener("click", jbLoad); $("jb-run").addEventListener("click", jbRun);
+  jbLoad();
+  $("rv-text").value = DATA.sample.prd;
+  $("rv-sample").addEventListener("click", () => { $("rv-text").value = DATA.sample.prd; });
+  $("rv-run1").addEventListener("click", () => rvRun(1)); $("rv-run3").addEventListener("click", () => rvRun(3));
+  $("setup-select").addEventListener("change", (e) => { selectedSetup = e.target.value || null; renderAll(); });
+  $("mx-labels").addEventListener("click", () => { matrixMode = "labels"; renderMatrix(); renderCellDetail(); });
+  $("mx-results").addEventListener("click", () => { matrixMode = "results"; renderMatrix(); renderCellDetail(); });
+  show(location.hash.slice(1));
+  connect();
+}
+
+async function connect() {
+  const c = window.claude;
+  if (!c || !c.use) { renderAll(); jbRefresh(); return; }
+  c.use("sample").then(s => { sampleApi = s; renderRunControls(); jbRefresh(); });
+  c.use("user").then(async u => { userApi = u; if (u) { try { canWrite = await u.can("data.write"); } catch { canWrite = null; } } renderRunControls(); });
+  const db = await c.use("db"); dbApi = db;
+  if (!db) { $("run-status").replaceChildren(h("p", { class: "note" }, "Saved runs can't be reached in this view.")); return; }
+  const timer = setTimeout(() => { $("run-status").replaceChildren(h("p", { class: "note" }, "Saved runs are taking a while to load. They may be out of date.")); }, 10000);
+  db.collection("runs").onSnapshot(snap => { store.runs = {}; for (const d of snap.docs) store.runs[d.id] = d.data(); renderAll(); }, () => {});
+  db.collection("calls").limit(1000).onSnapshot(snap => {
+    if (!snap.metadata.fromCache) { clearTimeout(timer); }
+    store.calls = snap.docs.map(d => d.data());
+    if (!running) renderAll();
+  }, (e) => { clearTimeout(timer); $("run-status").replaceChildren(h("p", { class: "note" }, "Saved runs could not be loaded.")); });
+}
+boot();
+</script>
