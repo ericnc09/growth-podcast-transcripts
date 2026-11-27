@@ -10,8 +10,8 @@
     {"speaker": "Shreya Shankar", "file": "episodes/2025-07-11-hamel-shreya-podcast.md", "ts": "00:07:02", "quote": "I've never seen somebody make it through multiple iterations of their product without any evals."}
    ]},
   {"id": "FM02", "name": "Success criteria aren't measurable",
-   "check": "The requirements describe the AI behaviour in qualitative terms that an engineer cannot score.",
-   "pass_if": "Requirements include example inputs with expected behaviour, or criteria an engineer could score pass/fail.",
+   "check": "The Requirements section describes the AI behaviour only in qualitative terms that an engineer cannot score. Judge this from the Requirements section alone, even if the eval plan is precise.",
+   "pass_if": "The Requirements section includes example inputs with expected behaviour, or criteria an engineer could score pass/fail.",
    "quotes": [
     {"speaker": "Ankur Goyal", "file": "episodes/2026-03-20-ankur-goyal-podcast.md", "ts": "00:07:49", "quote": "I think the modern PRD is an eval."},
     {"speaker": "Daniel McKinnon", "file": "episodes/2026-07-28-how-to-build-your-first-eval.md", "ts": "00:04:52", "quote": "an eval is the best way to communicate what your product should be doing"},

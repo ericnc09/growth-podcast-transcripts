@@ -214,6 +214,26 @@ footer { border-top: 1px solid var(--line); padding-block: 20px 32px; font-size:
       </div>
 
       <div class="panel">
+        <div class="panel-head"><div><h2>Judge changelog</h2>
+          <p class="muted small">What the first full run (judge j1, 30 cases × 3 runs per tier, Nov 27) found, and what changed for j2. Older runs stay in the store under their own version.</p></div></div>
+        <div class="scroll"><table class="data">
+          <thead><tr><th>Judge j1</th><th>Fast tier</th><th>Default tier</th></tr></thead>
+          <tbody>
+            <tr><td>Accuracy, majority of 3</td><td class="mono">93.0%</td><td class="mono">94.7%</td></tr>
+            <tr><td>All 3 runs agree</td><td class="mono">97.7%</td><td class="mono">97.7%</td></tr>
+            <tr><td>Latency p50 / p95</td><td class="mono">6.3 s / 8.6 s</td><td class="mono">4.7 s / 5.1 s</td></tr>
+            <tr><td>Quoted passages found in the PRD</td><td class="mono">839 of 840</td><td class="mono">825 of 825</td></tr>
+            <tr><td>Graded eval-plan checks on a PRD with no eval plan</td><td class="mono">40</td><td class="mono">26</td></tr>
+          </tbody>
+        </table></div>
+        <ol class="small" style="margin:10px 0 0;padding-left:18px;display:grid;gap:6px">
+          <li><b>The judge found a bug in the golden set.</b> Both tiers flagged FM06 (fuzzy rubric) on notes-4, notes-5 and contracts-4, all 3 runs. They were right: the planted FM03 passage said "a score from 1 to 10", which is a fuzzy rubric too. The generic metrics no longer use rating scales, so each passage plants one flaw.</li>
+          <li><b>Most misses were the na rule.</b> On the 3 PRDs with no eval plan, judges still graded the eval-plan checks instead of answering na. j2 states the rule as an instruction, naming the checks.</li>
+          <li><b>The fast tier read FM02 too broadly.</b> It passed 4 of 6 PRDs with vague requirements because their eval plans were precise. FM02 now says to judge the Requirements section alone.</li>
+        </ol>
+      </div>
+
+      <div class="panel">
         <div class="panel-head"><div><h2>How the judge works</h2>
           <p class="muted small">The model is the only part that can vary. Everything around it is code, and the same inputs always build the same prompt.</p></div></div>
         <div class="grid2">
@@ -325,7 +345,7 @@ const $ = (id) => document.getElementById(id);
 const safeUrl = (u) => (typeof u === "string" && u.startsWith("https://")) ? u : null;
 
 // ---------- constants ----------
-const JUDGE_VERSION = "j1";
+const JUDGE_VERSION = "j2";
 const REPS = 3;
 const TIERS = { quick: { label: "Fast tier", model: "Claude Haiku 5.5", pin: 0.10, pout: 0.50 },
                 default: { label: "Default tier", model: "Claude Sonnet 5.5", pin: 2.00, pout: 10.00 } };
@@ -361,6 +381,7 @@ function judgePrompt(prd, modes) {
     "- Judge only what the PRD says. Do not assume plans it does not state.",
     '- "quote": copy the shortest exact passage from the PRD, at most 25 words, that decides the verdict. Use "" when the verdict rests on something missing.',
     '- "why": one sentence, at most 25 words.',
+    `- If FM01 fails because there is no evaluation plan, set ${EVAL_DEPENDENT.join(", ")} to "na" and do not grade them.`,
     "",
     "Failure modes:",
     ...modes.map(m => `${m.id} ${m.name}\n  Fails when: ${m.check}\n  Passes when: ${m.pass_if}`),
