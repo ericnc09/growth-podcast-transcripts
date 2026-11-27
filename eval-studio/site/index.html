@@ -300,11 +300,12 @@ footer { border-top: 1px solid var(--line); padding-block: 20px 32px; font-size:
     <section class="view" id="view-review" hidden>
       <div class="panel">
         <div class="panel-head"><div><h2>Review a PRD</h2>
-          <p class="muted small">Paste a PRD for an AI feature, or use the sample. The same judges run on it, and five reviewer roles report what they check. The roles are lenses, not people: the guests quoted below did not review your PRD and do not endorse this tool.</p></div></div>
+          <p class="muted small">Paste a PRD for an AI feature, or use the sample. The same judges run on it, and five reviewer roles report what they check. It defaults to the setup that scored best on the golden set: 3 fast-tier judges, with the no-eval-plan rule applied in code. The roles are lenses, not people: the guests quoted below did not review your PRD and do not endorse this tool.</p></div></div>
         <textarea id="rv-text" rows="14" aria-label="PRD text"></textarea>
         <div class="row">
-          <button class="btn" id="rv-run1" type="button">Review with 1 judge</button>
-          <button class="btn ghost" id="rv-run3" type="button">Review with 3 judges</button>
+          <select id="rv-tier" aria-label="Judge tier"><option value="quick">Fast tier</option><option value="default">Default tier</option></select>
+          <button class="btn" id="rv-run3" type="button">Review with 3 judges</button>
+          <button class="btn ghost" id="rv-run1" type="button">Review with 1 judge</button>
           <button class="btn ghost" id="rv-sample" type="button">Load the sample PRD</button>
           <span class="note" id="rv-note"></span>
         </div>
@@ -317,7 +318,7 @@ footer { border-top: 1px solid var(--line); padding-block: 20px 32px; font-size:
     <section class="view" id="view-explore" hidden>
       <div class="panel">
         <div><h2>How do top AI PMs evaluate…</h2>
-          <p class="muted small">Nine questions, answered with what guests said on The Growth Podcast. The one-line answers are summaries by this page, not quotes.</p></div>
+          <p class="muted small">Ten questions, answered with what guests said on The Growth Podcast. The one-line answers are summaries by this page, not quotes.</p></div>
         <div class="row" id="ex-chips"></div>
       </div>
       <div class="topics" id="ex-topics"></div>
@@ -817,27 +818,38 @@ async function rvRun(reps) {
   rvRunning = true; ["rv-run1", "rv-run3"].forEach(id => $(id).disabled = true);
   $("rv-note").textContent = reps > 1 ? "Running 3 judges…" : "Running the judge…";
   const t0 = performance.now(); const out = [];
-  await pool(Array.from({ length: reps }, (_, i) => ({ rep: i + 1, run: () => callJudge(prd, MODES, "default") })), 3, async (t, r, e) => {
+  const tier = $("rv-tier").value;
+  await pool(Array.from({ length: reps }, (_, i) => ({ rep: i + 1, run: () => callJudge(prd, MODES, tier) })), 3, async (t, r, e) => {
     if (e) { $("rv-note").textContent = e.code === "not_granted" ? "Claude access was declined for this page." : "A judge call failed: " + (e.message || e.code || "unknown error"); return; }
     out.push({ ...r, rep: t.rep });
   }, () => false);
   const wall = Math.round(performance.now() - t0);
   rvRunning = false; ["rv-run1", "rv-run3"].forEach(id => $(id).disabled = false);
   if (!out.length) return;
-  $("rv-note").textContent = "";
-  rvRender(prd, out, wall);
+  // Apply the no-eval-plan rule in code, as in the "rule in code" rows of the trade-off table.
+  let overrides = 0;
+  for (const o of out) {
+    if (!(o.verdicts.FM01 && o.verdicts.FM01.v === "fail")) continue;
+    for (const id of EVAL_DEPENDENT) if (o.verdicts[id] && o.verdicts[id].v !== "na") {
+      overrides++; o.verdicts[id] = { v: "na", quote: "", why: "There is no eval plan, so this check does not apply. Set by code, not by the judge.", found: null };
+    }
+  }
+  $("rv-note").textContent = overrides ? `Code set ${overrides} verdict${overrides > 1 ? "s" : ""} to n/a because the judge found no eval plan.` : "";
+  rvRender(prd, out, wall, tier);
 }
-function rvRender(prd, out, wall) {
+function rvRender(prd, out, wall, tier) {
   const isSample = norm(prd) === norm(DATA.sample.prd);
   const majFor = (id) => majority(out.map(o => o.verdicts[id] && o.verdicts[id].v));
   const ids = MODES.map(m => m.id);
   const fails = ids.filter(id => majFor(id) === "fail").length, applicable = ids.filter(id => majFor(id) !== "na").length;
   const q = out.reduce((s, o) => s + o.quotes, 0), qf = out.reduce((s, o) => s + o.quotesFound, 0);
-  const co = costOf(out.map(o => ({ inChars: o.inChars, outChars: o.outChars })), "default");
+  const co = costOf(out.map(o => ({ inChars: o.inChars, outChars: o.outChars })), tier);
+  const matched = isSample ? ids.filter(id => majFor(id) === DATA.sample.expected[id]).length : null;
   const stat = (b, span) => h("div", { class: "stat" }, h("b", null, b), h("span", null, span));
   const st = $("rv-stats"); st.hidden = false;
   st.replaceChildren(stat(`${fails} of ${applicable}`, "checks failed"), stat(String(out.length), out.length > 1 ? "judges, majority vote" : "judge"),
-    stat(q ? pct(qf / q) : "–", "of quoted PRD passages found word for word"), stat(secs(wall), "wall-clock time"), stat(money(co.cost * out.length), "est. cost (default tier)"));
+    stat(q ? pct(qf / q) : "–", "of quoted PRD passages found word for word"), stat(secs(wall), "wall-clock time"), stat(money(co.cost * out.length), "est. cost (" + TIERS[tier].label.toLowerCase() + ")"),
+    ...(matched != null ? [stat(`${matched} of ${ids.length}`, "match what was planted in the sample")] : []));
   const panels = $("rv-panels"); panels.replaceChildren();
   for (const role of ROLES) {
     const card = h("article", { class: "role" }, h("header", null, h("div", { class: "eyebrow" }, "Reviewer role"), h("h3", null, role.name), h("p", { class: "small muted" }, role.lens)));
@@ -858,11 +870,15 @@ function rvRender(prd, out, wall) {
 }
 
 // ---------- explorer ----------
+const TOPIC_FM = { vibes: "FM01", "error-analysis": "FM04", judge: "FM05", rubric: "FM03", dataset: "FM07", online: "FM08", cost: "FM09", agents: "FM10", safety: "FM06" };
 function renderExplorer() {
   const chips = $("ex-chips"), box = $("ex-topics"); chips.replaceChildren(); box.replaceChildren();
   for (const t of DATA.topics) {
     chips.append(h("a", { class: "chip", href: "#explore", onclick: (e) => { e.preventDefault(); const el = $("topic-" + t.id); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } }, t.title));
-    box.append(h("div", { class: "panel topic", id: "topic-" + t.id }, h("h3", null, t.title), h("p", { class: "small muted" }, t.summary), h("div", { class: "quotes" }, t.quotes.map(quoteEl))));
+    const fm = TOPIC_FM[t.id] && MODE[TOPIC_FM[t.id]];
+    box.append(h("div", { class: "panel topic", id: "topic-" + t.id }, h("h3", null, t.title), h("p", { class: "small muted" }, t.summary),
+      fm ? h("p", { class: "small" }, h("span", { class: "chip acc" }, fm.id), " The judge checks this as ", h("b", null, fm.name), ".") : null,
+      h("div", { class: "quotes" }, t.quotes.map(quoteEl))));
   }
 }
 
