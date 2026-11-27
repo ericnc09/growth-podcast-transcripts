@@ -12,6 +12,12 @@
      "quote": "I actually think vibe checks are a form of eval"
     },
     {
+     "speaker": "Brian Balfour",
+     "file": "episodes/2025-02-25-reforge-growth-crash-course.md",
+     "ts": "00:54:24",
+     "quote": "I can't just write a PRD and test it according to that spec because even the same inputs in the AI features create different outputs."
+    },
+    {
      "speaker": "Shreya Shankar",
      "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
      "ts": "00:07:47",
@@ -68,6 +74,12 @@
      "quote": "80% of people who are using LLM as a judge are just writing a prompt and just praying that is doing the right thing."
     },
     {
+     "speaker": "Laura Burkhauser",
+     "file": "episodes/2025-12-15-she-went-from-ic-pm-to-ceo-of-550m.md",
+     "ts": "00:14:23",
+     "quote": "First, we have a human judge it and make sure that they really like the criteria. Then we have a human and an LLM both judge it and we see, does the LLM agree with the human or does the LLM disagree?"
+    },
+    {
      "speaker": "Hamel Husain",
      "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
      "ts": "00:18:20",
@@ -99,6 +111,12 @@
      "quote": "we say limit yourself to binary, because that is what the LLM can do very well."
     },
     {
+     "speaker": "Jayesh Govindarajan",
+     "file": "episodes/2026-11-03-salesforce-ai-native-product-team.md",
+     "ts": "00:37:01",
+     "quote": "Can you set a bar on what good looks like? Because that's what translates into evals."
+    },
+    {
      "speaker": "Shreya Shankar",
      "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
      "ts": "00:07:47",
@@ -122,6 +140,12 @@
      "file": "episodes/2026-03-20-ankur-goyal-podcast.md",
      "ts": "00:20:06",
      "quote": "An eval consists of three things."
+    },
+    {
+     "speaker": "Laura Burkhauser",
+     "file": "episodes/2025-12-15-she-went-from-ic-pm-to-ceo-of-550m.md",
+     "ts": "00:26:51",
+     "quote": "once we got real customer data, then we were able to organize that customer data into a series of regression tests"
     },
     {
      "speaker": "Daniel McKinnon",
@@ -155,6 +179,12 @@
      "quote": "let's ship it into prod and see if they actually like it with an online eval."
     },
     {
+     "speaker": "Brian Balfour",
+     "file": "episodes/2025-02-25-reforge-growth-crash-course.md",
+     "ts": "01:03:33",
+     "quote": "monitor how these systems like drift and change over time because they're not static."
+    },
+    {
      "speaker": "Daniel McKinnon",
      "file": "episodes/2026-07-28-how-to-build-your-first-eval.md",
      "ts": "00:04:26",
@@ -178,6 +208,12 @@
      "file": "episodes/2026-02-19-ai-evals-explained-simply.md",
      "ts": "00:15:33",
      "quote": "They can let you understand whether a cheaper model can also go ahead and perform at a similar kind of level or not."
+    },
+    {
+     "speaker": "Jan Oberhauser",
+     "file": "episodes/2026-10-05-n8n-vs-claude-code.md",
+     "ts": "01:02:25",
+     "quote": "evals are the way to actually ensure that especially if you want to switch, for example, a model or other things like that"
     },
     {
      "speaker": "Ankit Shukla",
@@ -209,6 +245,12 @@
      "file": "episodes/2026-07-28-how-to-build-your-first-eval.md",
      "ts": "00:13:35",
      "quote": "this is a totally new paradigm of writing evals because you're no longer thinking about QA, you're thinking about tasks."
+    },
+    {
+     "speaker": "Harish Mukhami",
+     "file": "episodes/2025-06-01-harish-mukhami-podcast.md",
+     "ts": "00:42:35",
+     "quote": "If you're running AI agents, you should definitely have evals to make sure that your agent is doing as it's intended"
     },
     {
      "speaker": "Ankur Goyal",
@@ -265,6 +307,12 @@
      "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
      "ts": "00:00:02",
      "quote": "evals give you a way as a PM to inject your taste and your judgment directly into the critical path of the AI product being developed."
+    },
+    {
+     "speaker": "Abhi Muchhal",
+     "file": "episodes/2026-06-03-codex-pm.md",
+     "ts": "01:00:05",
+     "quote": "the currency of progress, especially in a frontier lab, is evals."
     },
     {
      "speaker": "Jake Brill",

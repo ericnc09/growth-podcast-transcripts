@@ -16,6 +16,15 @@ window.EVIDENCE = {
       "youtube": "https://www.youtube.com/watch?v=71qvIkO9d_A&t=115s"
      },
      {
+      "speaker": "Brian Balfour",
+      "file": "episodes/2025-02-25-reforge-growth-crash-course.md",
+      "ts": "00:54:24",
+      "quote": "I can't just write a PRD and test it according to that spec because even the same inputs in the AI features create different outputs.",
+      "episode": "Reforge Growth Crash Course in 82 Minutes | The Brian Balfour Episode",
+      "date": "2025-02-25",
+      "youtube": "https://www.youtube.com/watch?v=sWWRBOXo6rA&t=3249s"
+     },
+     {
       "speaker": "Shreya Shankar",
       "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
       "ts": "00:07:47",
@@ -93,6 +102,15 @@ window.EVIDENCE = {
       "youtube": "https://www.youtube.com/watch?v=g_3LJ2QBOQE&t=4094s"
      },
      {
+      "speaker": "Laura Burkhauser",
+      "file": "episodes/2025-12-15-she-went-from-ic-pm-to-ceo-of-550m.md",
+      "ts": "00:14:23",
+      "quote": "First, we have a human judge it and make sure that they really like the criteria. Then we have a human and an LLM both judge it and we see, does the LLM agree with the human or does the LLM disagree?",
+      "episode": "She went from IC PM to CEO of $550M AI company Descript in 3 years",
+      "date": "2025-12-15",
+      "youtube": "https://www.youtube.com/watch?v=LR_WOmcE9WI&t=848s"
+     },
+     {
       "speaker": "Hamel Husain",
       "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
       "ts": "00:18:20",
@@ -136,6 +154,15 @@ window.EVIDENCE = {
       "youtube": "https://www.youtube.com/watch?v=g_3LJ2QBOQE&t=584s"
      },
      {
+      "speaker": "Jayesh Govindarajan",
+      "file": "episodes/2026-11-03-salesforce-ai-native-product-team.md",
+      "ts": "00:37:01",
+      "quote": "Can you set a bar on what good looks like? Because that's what translates into evals.",
+      "episode": "What an AI-Native Product Team Actually Looks Like at Salesforce",
+      "date": "2026-11-03",
+      "youtube": "https://www.youtube.com/watch?v=_jBa_YEobGI&t=2206s"
+     },
+     {
       "speaker": "Shreya Shankar",
       "file": "episodes/2025-07-11-hamel-shreya-podcast.md",
       "ts": "00:07:47",
@@ -168,6 +195,15 @@ window.EVIDENCE = {
       "episode": "Evals are the new PRD. Here is the playbook with the CEO of the leader in the space (Ankur Goyal, Founder and CEO, Braintrust)",
       "date": "2026-03-20",
       "youtube": "https://www.youtube.com/watch?v=71qvIkO9d_A&t=1191s"
+     },
+     {
+      "speaker": "Laura Burkhauser",
+      "file": "episodes/2025-12-15-she-went-from-ic-pm-to-ceo-of-550m.md",
+      "ts": "00:26:51",
+      "quote": "once we got real customer data, then we were able to organize that customer data into a series of regression tests",
+      "episode": "She went from IC PM to CEO of $550M AI company Descript in 3 years",
+      "date": "2025-12-15",
+      "youtube": "https://www.youtube.com/watch?v=LR_WOmcE9WI&t=1596s"
      },
      {
       "speaker": "Daniel McKinnon",
@@ -213,6 +249,15 @@ window.EVIDENCE = {
       "youtube": "https://www.youtube.com/watch?v=ztN6bE_FuQQ&t=147s"
      },
      {
+      "speaker": "Brian Balfour",
+      "file": "episodes/2025-02-25-reforge-growth-crash-course.md",
+      "ts": "01:03:33",
+      "quote": "monitor how these systems like drift and change over time because they're not static.",
+      "episode": "Reforge Growth Crash Course in 82 Minutes | The Brian Balfour Episode",
+      "date": "2025-02-25",
+      "youtube": "https://www.youtube.com/watch?v=sWWRBOXo6rA&t=3798s"
+     },
+     {
       "speaker": "Daniel McKinnon",
       "file": "episodes/2026-07-28-how-to-build-your-first-eval.md",
       "ts": "00:04:26",
@@ -245,6 +290,15 @@ window.EVIDENCE = {
       "episode": "AI Evals Explained Simply by Ankit Shukla",
       "date": "2026-02-19",
       "youtube": "https://www.youtube.com/watch?v=Raa3qjEBvKE&t=918s"
+     },
+     {
+      "speaker": "Jan Oberhauser",
+      "file": "episodes/2026-10-05-n8n-vs-claude-code.md",
+      "ts": "01:02:25",
+      "quote": "evals are the way to actually ensure that especially if you want to switch, for example, a model or other things like that",
+      "episode": "n8n CEO: Why we aren’t dead, how to build great AI products, and what I look for in an AI PM",
+      "date": "2026-10-05",
+      "youtube": "https://www.youtube.com/watch?v=PkoX6R5sn8Y&t=3730s"
      },
      {
       "speaker": "Ankit Shukla",
@@ -288,6 +342,15 @@ window.EVIDENCE = {
       "episode": "How to Build Frontier-Lab Quality Evals with Daniel McKinnon, ex-PM at Meta, Google",
       "date": "2026-07-28",
       "youtube": "https://www.youtube.com/watch?v=ztN6bE_FuQQ&t=800s"
+     },
+     {
+      "speaker": "Harish Mukhami",
+      "file": "episodes/2025-06-01-harish-mukhami-podcast.md",
+      "ts": "00:42:35",
+      "quote": "If you're running AI agents, you should definitely have evals to make sure that your agent is doing as it's intended",
+      "episode": "We Built an AI Employee in 62 mins (Cursor, ChatGPT, Gibson, Crew AI)",
+      "date": "2025-06-01",
+      "youtube": "https://www.youtube.com/watch?v=Uhs_p-Is0lo&t=2540s"
      },
      {
       "speaker": "Ankur Goyal",
@@ -365,6 +428,15 @@ window.EVIDENCE = {
       "episode": "The PM’s Role in AI Evals: Step-by-Step ",
       "date": "2025-07-11",
       "youtube": "https://www.youtube.com/watch?v=g_3LJ2QBOQE&t=0s"
+     },
+     {
+      "speaker": "Abhi Muchhal",
+      "file": "episodes/2026-06-03-codex-pm.md",
+      "ts": "01:00:05",
+      "quote": "the currency of progress, especially in a frontier lab, is evals.",
+      "episode": "How to Use Codex Like an OpenAI PM | Abhi Muchhal, PM OpenAI (ex-Meta and Nubank)",
+      "date": "2026-06-03",
+      "youtube": "https://www.youtube.com/watch?v=j1IOG8WoW1A&t=3590s"
      },
      {
       "speaker": "Jake Brill",
