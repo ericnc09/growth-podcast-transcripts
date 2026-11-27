@@ -24,6 +24,7 @@
   color-scheme: dark; }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
+.callout { margin: 0; padding: 10px 12px; border-radius: 10px; background: var(--accent-soft); border: 1px solid var(--line); }
 body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 .wrap { max-width: 1120px; margin: 0 auto; }
@@ -169,7 +170,7 @@ footer { border-top: 1px solid var(--line); padding-block: 20px 32px; font-size:
       <div class="panel" id="run-panel">
         <div class="panel-head">
           <div><h2>Judge runs</h2>
-            <p class="muted small">Each run sends all 30 golden PRDs to the judge 3 times. Results are saved here, so everyone who opens this page sees the same numbers.</p></div>
+            <p class="muted small">Each run sends all 42 golden PRDs to the judge 3 times. Results are saved here, so everyone who opens this page sees the same numbers.</p></div>
           <div class="row">
             <label class="field">Results shown<select id="setup-select"></select></label>
           </div>
@@ -181,7 +182,7 @@ footer { border-top: 1px solid var(--line); padding-block: 20px 32px; font-size:
       <div class="panel">
         <div class="panel-head">
           <div><h2 id="matrix-title">Golden labels</h2>
-            <p class="muted small" id="matrix-sub">Rows are failure modes, columns are the 30 test PRDs. Select a square for detail.</p></div>
+            <p class="muted small" id="matrix-sub">Rows are failure modes, columns are the 42 test PRDs (the last 12 are the hard set). Select a square for detail.</p></div>
           <div class="row" role="group" aria-label="Matrix view">
             <button class="btn ghost" id="mx-labels" aria-pressed="true">Labels</button>
             <button class="btn ghost" id="mx-results" aria-pressed="false">Judge results</button>
@@ -192,18 +193,18 @@ footer { border-top: 1px solid var(--line); padding-block: 20px 32px; font-size:
         <div id="cell-detail"></div>
       </div>
 
-      <div class="grid2">
-        <div class="panel">
-          <div><h2>Reliability by failure mode</h2>
-            <p class="muted small">Majority of 3 runs against the label. Recall: share of planted flaws caught. Precision: share of flags that were real. Agreement: share of verdicts where all 3 runs matched.</p></div>
-          <div class="scroll"><table class="data" id="fm-table"></table></div>
-        </div>
-        <div class="panel">
-          <div><h2>Trade-offs: cost, latency, accuracy</h2>
-            <p class="muted small">One judge or three, fast tier or default tier, from the same saved runs. "×1" uses only the first run of each case.</p></div>
-          <div class="scroll"><table class="data" id="trade-table"></table></div>
-          <p class="note" id="price-note"></p>
-        </div>
+      <div class="panel">
+        <div><h2>Trade-offs: cost, latency, accuracy</h2>
+          <p class="muted small">One judge or three, fast tier or default tier, from the same saved runs. "×1" uses only the first run of each case. "Rule in code" applies the no-eval-plan rule in code instead of trusting the model to follow it.</p></div>
+        <p class="callout small" id="trade-best" hidden></p>
+        <div class="scroll"><table class="data" id="trade-table"></table></div>
+        <p class="note" id="price-note"></p>
+      </div>
+
+      <div class="panel">
+        <div><h2>Reliability by failure mode</h2>
+          <p class="muted small">Majority of 3 runs against the label. Recall: share of planted flaws caught. Precision: share of flags that were real. Agreement: share of verdicts where all 3 runs matched.</p></div>
+        <div class="scroll"><table class="data" id="fm-table"></table></div>
       </div>
 
       <div class="panel">
@@ -215,24 +216,23 @@ footer { border-top: 1px solid var(--line); padding-block: 20px 32px; font-size:
 
       <div class="panel">
         <div class="panel-head"><div><h2>Judge changelog</h2>
-          <p class="muted small">What the first full run (judge j1, 30 cases × 3 runs per tier, Nov 27) found, what changed for j2, and how j2 scored on the same set. Older runs stay in the store under their own version; the charts above show only the current judge. In j1 and j2, FM06 meant "fuzzy rubric".</p></div></div>
+          <p class="muted small">Four versions in one day, each run on both tiers, 3 times per case. Three times the judge flagged something the labels said was fine, and the judge was right: the bug was in the golden set. The charts above show only the current version; older runs stay in the store. Before j3, FM06 meant "fuzzy rubric" and the set had 30 cases.</p></div></div>
         <div class="scroll"><table class="data">
-          <thead><tr><th></th><th>j1 fast</th><th>j1 default</th><th>j2 fast</th><th>j2 default</th></tr></thead>
+          <thead><tr><th></th><th class="num">j1 fast</th><th class="num">j1 default</th><th class="num">j2 fast</th><th class="num">j2 default</th><th class="num">j3 fast</th><th class="num">j3 default</th><th class="num">j4 fast</th><th class="num">j4 default</th></tr></thead>
           <tbody>
-            <tr><td>Accuracy, majority of 3</td><td class="mono">93.0%</td><td class="mono">94.7%</td><td class="mono">97.0%</td><td class="mono">99.7%</td></tr>
-            <tr><td>All 3 runs agree</td><td class="mono">97.7%</td><td class="mono">97.7%</td><td class="mono">95.7%</td><td class="mono">99.0%</td></tr>
-            <tr><td>Latency p50 / p95</td><td class="mono">6.3 s / 8.6 s</td><td class="mono">4.7 s / 5.1 s</td><td class="mono">6.1 s / 8.2 s</td><td class="mono">4.7 s / 5.5 s</td></tr>
-            <tr><td>Quoted passages found in the PRD</td><td class="mono">839 of 840</td><td class="mono">825 of 825</td><td class="mono">828 of 829</td><td class="mono">807 of 807</td></tr>
-            <tr><td>Graded eval-plan checks on a PRD with no eval plan</td><td class="mono">40</td><td class="mono">26</td><td class="mono">28</td><td class="mono">0</td></tr>
+            <tr><td>Cases</td><td class="num">30</td><td class="num">30</td><td class="num">30</td><td class="num">30</td><td class="num">42</td><td class="num">42</td><td class="num">42</td><td class="num">42</td></tr>
+            <tr><td>Accuracy, majority of 3</td><td class="num">93.0%</td><td class="num">94.7%</td><td class="num">97.0%</td><td class="num">99.7%</td><td class="num">96.7%</td><td class="num">99.8%</td><td class="num">97.4%</td><td class="num">99.8%</td></tr>
+            <tr><td>All 3 runs agree</td><td class="num">97.7%</td><td class="num">97.7%</td><td class="num">95.7%</td><td class="num">99.0%</td><td class="num">97.9%</td><td class="num">99.5%</td><td class="num">98.8%</td><td class="num">99.0%</td></tr>
+            <tr><td>Latency p50</td><td class="num">6.3 s</td><td class="num">4.7 s</td><td class="num">6.1 s</td><td class="num">4.7 s</td><td class="num">6.8 s</td><td class="num">4.9 s</td><td class="num">6.6 s</td><td class="num">5.0 s</td></tr>
+            <tr><td>Quoted passages found in the PRD</td><td class="num">99.9%</td><td class="num">100%</td><td class="num">99.9%</td><td class="num">100%</td><td class="num">99.6%</td><td class="num">100%</td><td class="num">99.6%</td><td class="num">100%</td></tr>
+            <tr><td>Graded a check that should be na</td><td class="num">40</td><td class="num">26</td><td class="num">28</td><td class="num">0</td><td class="num">33</td><td class="num">0</td><td class="num">35</td><td class="num">0</td></tr>
           </tbody>
         </table></div>
         <ol class="small" style="margin:10px 0 0;padding-left:18px;display:grid;gap:6px">
-          <li><b>The judge found a bug in the golden set.</b> Both tiers flagged FM06 (fuzzy rubric) on notes-4, notes-5 and contracts-4, all 3 runs. They were right: the planted FM03 passage said "a score from 1 to 10", which is a fuzzy rubric too. The generic metrics no longer use rating scales, so each passage plants one flaw.</li>
-          <li><b>Most misses were the na rule.</b> On the 3 PRDs with no eval plan, judges still graded the eval-plan checks instead of answering na. j2 states the rule as an instruction, naming the checks.</li>
-          <li><b>The fast tier read FM02 too broadly.</b> It passed 4 of 6 PRDs with vague requirements because their eval plans were precise. FM02 now says to judge the Requirements section alone. In j2 both tiers caught all 6.</li>
-          <li><b>j2 is too good for this set.</b> The default tier now misses 1 verdict in 300, so this golden set has hit the problem FM07 warns about: it can no longer show progress. The fast tier still ignores the na rule on 2 of the 3 PRDs with no eval plan, so that rule is the one place the tiers really differ. The next version of the set needs harder cases, such as flaws stated subtly or split across sections.</li>
-          <li><b>j3 follows a review of the failure-mode list.</b> Fuzzy rubric is merged into FM03, now "Generic or fuzzy measures", because the two kept overlapping. FM06 is now "Safety and guardrails untested", and every PRD has a safety section. 12 hard cases join the 30 standard ones, and the trade-off table reports the hard set on its own.</li>
-          <li><b>j3 results, and two more golden-set bugs.</b> Accuracy was 96.7% fast and 99.8% default over 42 cases, with the hard set at 98.3% and 99.2%. The hard cases didn't stump the default tier. Its one miss was a label bug: a moved FM10 passage mentioned scoring a weekly sample of beta runs, which is a production loop, so FM08 really did pass on analytics-h2. The fast tier caught the other bug: a Gatherly guardrail list named a rule with no guardrail behind it. Both are fixed in j4. The judge prompt is unchanged; the version moves because the cases did.</li>
+          <li><b>j1 → j2. The judge found a bug in the golden set.</b> Both tiers flagged a fuzzy rubric on notes-4, notes-5 and contracts-4, all 3 runs. They were right: the planted "generic metrics" passage used a 1-to-10 score, which is a fuzzy rubric too. Most other misses were the na rule, so j2 states it as an instruction, and FM02 now says to judge the Requirements section alone.</li>
+          <li><b>j2 → j3. The set was too easy.</b> Default missed 1 verdict in 300, so the golden set had the problem FM07 warns about: it could no longer show progress. j3 adds 12 hard cases (subtle flaws, traps that look flawed but aren't, and sound passages moved to another section). It also merges fuzzy rubric into FM03 and adds FM06, safety and guardrails, after a review of the list.</li>
+          <li><b>j3 → j4. Two more golden-set bugs.</b> Default's one miss was a label bug: a moved FM10 passage mentioned scoring a weekly sample of beta runs, which is a production loop, so FM08 really did pass. Fast caught the other: a guardrail list named a rule with no guardrail behind it. The prompt didn't change; the version moved because the cases did.</li>
+          <li><b>j4 is frozen.</b> Default missed 1 of 420 verdicts, a real judge error this time: on contracts-h1, 2 of 3 runs counted a monthly judge recheck as a production loop. Fast got every hard case right; all 11 of its misses were the na rule. Enforcing that rule in code takes Fast to 100% at under a tenth of Default's cost. When a rule is deterministic, put it in code, not in the prompt.</li>
         </ol>
       </div>
 
@@ -246,7 +246,7 @@ footer { border-top: 1px solid var(--line); padding-block: 20px 32px; font-size:
               <li>The prompt is compiled from the failure-mode definitions and the PRD. Its fingerprint is shown below.</li>
               <li>Output must be JSON with all 10 keys and one of pass, fail or na. Anything else is recorded as a schema failure.</li>
               <li>Every PRD passage the judge quotes is checked word for word against the PRD.</li>
-              <li>If the judge says there is no eval plan (FM01 fails), the eval-plan checks must be na. Violations are counted.</li>
+              <li>If the judge says there is no eval plan (FM01 fails), the eval-plan checks must be na. Violations are counted, and the trade-off table shows what changes when code enforces the rule instead of the prompt.</li>
               <li>Answer caching is off, so 3 runs are 3 real answers.</li>
             </ul>
             <h3>Measured, not assumed</h3>
@@ -449,7 +449,7 @@ async function pool(tasks, n, onDone, shouldStop) {
 }
 
 // ---------- metrics ----------
-function pct(x) { return x == null || isNaN(x) ? "–" : Math.round(x * 100) + "%"; }
+function pct(x) { if (x == null || isNaN(x)) return "–"; const p = x * 100; return (p >= 99.95 || p === Math.round(p) ? Math.round(p) : p.toFixed(1)) + "%"; }
 function quantile(arr, q) { if (!arr.length) return null; const s = [...arr].sort((a, b) => a - b); return s[Math.min(s.length - 1, Math.floor(q * (s.length - 1) + 0.5))]; }
 function secs(ms) { return ms == null ? "–" : (ms / 1000).toFixed(1) + " s"; }
 function money(x) { return x == null ? "–" : x < 0.01 ? "$" + x.toFixed(4) : "$" + x.toFixed(3); }
@@ -457,12 +457,14 @@ function money(x) { return x == null ? "–" : x < 0.01 ? "$" + x.toFixed(4) : "
 function callsFor(setupId) { return store.calls.filter(c => c.runId === setupId && c.ok); }
 
 // grid[caseId][fm] = array of verdict strings (by rep order)
-function gridFrom(calls, reps) {
+function gridFrom(calls, reps, enforceNa = false) {
+  // enforceNa: apply the "no eval plan means the eval-plan checks are na" rule in code instead of trusting the model.
   const g = {};
   for (const c of calls) {
     if (c.rep > reps) continue;
     (g[c.caseId] ||= {});
-    for (const [fm, r] of Object.entries(c.verdicts || {})) ((g[c.caseId][fm] ||= [])[c.rep - 1] = r.v);
+    const noPlan = enforceNa && c.verdicts && c.verdicts.FM01 && c.verdicts.FM01.v === "fail";
+    for (const [fm, r] of Object.entries(c.verdicts || {})) ((g[c.caseId][fm] ||= [])[c.rep - 1] = noPlan && EVAL_DEPENDENT.includes(fm) ? "na" : r.v);
   }
   return g;
 }
@@ -564,7 +566,7 @@ function renderRunControls() {
   btn.addEventListener("click", () => runGolden(tierSel.value));
   stop.addEventListener("click", () => { stopFlag = true; stop.disabled = true; });
   box.append(h("label", { class: "field" }, "Judge tier", tierSel), btn, stop,
-    h("span", { class: "note" }, "Uses your Claude account. About 3 to 6 minutes."));
+    h("span", { class: "note" }, "Uses your Claude account. About 12 to 15 minutes."));
   updateLabel();
 }
 
@@ -683,24 +685,28 @@ function renderFmTable() {
 function renderTradeTable() {
   const t = $("trade-table"); t.replaceChildren();
   t.append(h("thead", null, h("tr", null, h("th", null, "Setup"), h("th", { class: "num" }, "Accuracy"), h("th", { class: "num" }, "Hard set"), h("th", { class: "num" }, "Recall"), h("th", { class: "num" }, "p50"), h("th", { class: "num" }, "p95"), h("th", { class: "num" }, "Tokens / review"), h("th", { class: "num" }, "Cost / review"))));
-  const b = h("tbody"); let any = false;
+  const b = h("tbody"); let any = false; const cand = [];
   for (const id of setupIds()) {
     const calls = callsFor(id); if (!calls.length) continue; any = true;
     const tier = tierOf(id);
-    for (const reps of [1, REPS]) {
+    for (const [reps, enforce] of [[1, false], [REPS, false], [REPS, true]]) {
       const sub = calls.filter(c => c.rep <= reps);
-      const g = gridFrom(sub, reps);
+      const g = gridFrom(sub, reps, enforce);
       const o = overall(scoreModes(g, MODES, GOLD, reps));
       const oh = overall(scoreModes(g, MODES, GOLD.filter(c => c.set === "hard"), reps));
       const lat = calls.filter(c => c.rep === 1).map(c => c.latencyMs);
       const co = costOf(sub, tier);
-      b.append(h("tr", null, h("td", null, (TIERS[tier] ? TIERS[tier].label : tier) + " ×" + reps),
+      if (co.cost != null && o.acc != null) cand.push({ name: (TIERS[tier] ? TIERS[tier].label : tier) + " ×" + reps + (enforce ? " with the rule in code" : ""), acc: o.acc, cost: co.cost * reps });
+      b.append(h("tr", null, h("td", null, (TIERS[tier] ? TIERS[tier].label.replace(" tier", "") : tier) + " ×" + reps + (enforce ? ", rule in code" : "")),
         h("td", { class: "num" }, pct(o.acc)), h("td", { class: "num" }, pct(oh.acc)), h("td", { class: "num" }, pct(o.recall)),
         h("td", { class: "num" }, secs(quantile(lat, 0.5))), h("td", { class: "num" }, secs(quantile(lat, 0.95))),
         h("td", { class: "num" }, co.tin == null ? "–" : Math.round((co.tin + co.tout) * reps).toLocaleString()),
         h("td", { class: "num" }, co.cost == null ? "–" : money(co.cost * reps))));
     }
   }
+  const best = cand.sort((x, y) => (y.acc - x.acc) || (x.cost - y.cost))[0], dear = cand.filter(x => x.acc >= (best ? best.acc : 1) - 0.0051).sort((x, y) => y.cost - x.cost)[0];
+  const bx = $("trade-best"); bx.hidden = !best;
+  if (best) bx.textContent = "Best value: " + best.name + ", " + pct(best.acc) + " accurate at " + money(best.cost) + " per review." + (dear && dear !== best && dear.cost > best.cost * 1.5 ? " The closest-scoring alternative, " + dear.name + ", costs " + Math.round(dear.cost / best.cost) + "× more." : "");
   if (!any) b.append(h("tr", null, h("td", { colspan: 8, class: "note" }, "No saved runs yet. Run the golden set on the fast and default tiers to fill this table.")));
   t.append(b);
   $("price-note").textContent = "Latency is measured per call; three judges run in parallel, so a 3-judge review takes about as long as its slowest call. Tokens are estimated at 4 characters per token. Cost assumes list prices of the model each tier usually maps to: fast tier as " + TIERS.quick.model + " ($" + TIERS.quick.pin + " in / $" + TIERS.quick.pout + " out per million tokens), default tier as " + TIERS.default.model + " ($" + TIERS.default.pin + " / $" + TIERS.default.pout + "). The page cannot see which model answered.";
