@@ -130,7 +130,7 @@ def prd(p, v):
     else:
         L += [f"Beta with 20 customers, then general availability. After launch we track {p['online']}.", ""]
     if p["agent"] and g("FM10") == "split" and g("FM01") not in FAILING:
-        L += [f"Both the eval set and a weekly sample of beta runs are scored as whole tasks and step by step ({p['steps']}), "
+        L += [f"Before each release, every eval case is scored as a whole task and step by step ({p['steps']}), "
               "so we can see which step failed.", ""]
     if g("FM09") == "split":
         L += [f"Launch targets: {p['latency']}, and {p['cost']}. Before launch we also test {p['cheap_compare']}, "

@@ -232,6 +232,7 @@ footer { border-top: 1px solid var(--line); padding-block: 20px 32px; font-size:
           <li><b>The fast tier read FM02 too broadly.</b> It passed 4 of 6 PRDs with vague requirements because their eval plans were precise. FM02 now says to judge the Requirements section alone. In j2 both tiers caught all 6.</li>
           <li><b>j2 is too good for this set.</b> The default tier now misses 1 verdict in 300, so this golden set has hit the problem FM07 warns about: it can no longer show progress. The fast tier still ignores the na rule on 2 of the 3 PRDs with no eval plan, so that rule is the one place the tiers really differ. The next version of the set needs harder cases, such as flaws stated subtly or split across sections.</li>
           <li><b>j3 follows a review of the failure-mode list.</b> Fuzzy rubric is merged into FM03, now "Generic or fuzzy measures", because the two kept overlapping. FM06 is now "Safety and guardrails untested", and every PRD has a safety section. 12 hard cases join the 30 standard ones, and the trade-off table reports the hard set on its own.</li>
+          <li><b>j3 results, and two more golden-set bugs.</b> Accuracy was 96.7% fast and 99.8% default over 42 cases, with the hard set at 98.3% and 99.2%. The hard cases didn't stump the default tier. Its one miss was a label bug: a moved FM10 passage mentioned scoring a weekly sample of beta runs, which is a production loop, so FM08 really did pass on analytics-h2. The fast tier caught the other bug: a Gatherly guardrail list named a rule with no guardrail behind it. Both are fixed in j4. The judge prompt is unchanged; the version moves because the cases did.</li>
         </ol>
       </div>
 
@@ -347,7 +348,7 @@ const $ = (id) => document.getElementById(id);
 const safeUrl = (u) => (typeof u === "string" && u.startsWith("https://")) ? u : null;
 
 // ---------- constants ----------
-const JUDGE_VERSION = "j3";
+const JUDGE_VERSION = "j4";
 const REPS = 3;
 const TIERS = { quick: { label: "Fast tier", model: "Claude Haiku 5.5", pin: 0.10, pout: 0.50 },
                 default: { label: "Default tier", model: "Claude Sonnet 5.5", pin: 2.00, pout: 10.00 } };
