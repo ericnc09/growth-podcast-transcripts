@@ -215,21 +215,22 @@ footer { border-top: 1px solid var(--line); padding-block: 20px 32px; font-size:
 
       <div class="panel">
         <div class="panel-head"><div><h2>Judge changelog</h2>
-          <p class="muted small">What the first full run (judge j1, 30 cases × 3 runs per tier, Nov 27) found, and what changed for j2. Older runs stay in the store under their own version.</p></div></div>
+          <p class="muted small">What the first full run (judge j1, 30 cases × 3 runs per tier, Nov 27) found, what changed for j2, and how j2 scored on the same set. Older runs stay in the store under their own version.</p></div></div>
         <div class="scroll"><table class="data">
-          <thead><tr><th>Judge j1</th><th>Fast tier</th><th>Default tier</th></tr></thead>
+          <thead><tr><th></th><th>j1 fast</th><th>j1 default</th><th>j2 fast</th><th>j2 default</th></tr></thead>
           <tbody>
-            <tr><td>Accuracy, majority of 3</td><td class="mono">93.0%</td><td class="mono">94.7%</td></tr>
-            <tr><td>All 3 runs agree</td><td class="mono">97.7%</td><td class="mono">97.7%</td></tr>
-            <tr><td>Latency p50 / p95</td><td class="mono">6.3 s / 8.6 s</td><td class="mono">4.7 s / 5.1 s</td></tr>
-            <tr><td>Quoted passages found in the PRD</td><td class="mono">839 of 840</td><td class="mono">825 of 825</td></tr>
-            <tr><td>Graded eval-plan checks on a PRD with no eval plan</td><td class="mono">40</td><td class="mono">26</td></tr>
+            <tr><td>Accuracy, majority of 3</td><td class="mono">93.0%</td><td class="mono">94.7%</td><td class="mono">97.0%</td><td class="mono">99.7%</td></tr>
+            <tr><td>All 3 runs agree</td><td class="mono">97.7%</td><td class="mono">97.7%</td><td class="mono">95.7%</td><td class="mono">99.0%</td></tr>
+            <tr><td>Latency p50 / p95</td><td class="mono">6.3 s / 8.6 s</td><td class="mono">4.7 s / 5.1 s</td><td class="mono">6.1 s / 8.2 s</td><td class="mono">4.7 s / 5.5 s</td></tr>
+            <tr><td>Quoted passages found in the PRD</td><td class="mono">839 of 840</td><td class="mono">825 of 825</td><td class="mono">828 of 829</td><td class="mono">807 of 807</td></tr>
+            <tr><td>Graded eval-plan checks on a PRD with no eval plan</td><td class="mono">40</td><td class="mono">26</td><td class="mono">28</td><td class="mono">0</td></tr>
           </tbody>
         </table></div>
         <ol class="small" style="margin:10px 0 0;padding-left:18px;display:grid;gap:6px">
           <li><b>The judge found a bug in the golden set.</b> Both tiers flagged FM06 (fuzzy rubric) on notes-4, notes-5 and contracts-4, all 3 runs. They were right: the planted FM03 passage said "a score from 1 to 10", which is a fuzzy rubric too. The generic metrics no longer use rating scales, so each passage plants one flaw.</li>
           <li><b>Most misses were the na rule.</b> On the 3 PRDs with no eval plan, judges still graded the eval-plan checks instead of answering na. j2 states the rule as an instruction, naming the checks.</li>
-          <li><b>The fast tier read FM02 too broadly.</b> It passed 4 of 6 PRDs with vague requirements because their eval plans were precise. FM02 now says to judge the Requirements section alone.</li>
+          <li><b>The fast tier read FM02 too broadly.</b> It passed 4 of 6 PRDs with vague requirements because their eval plans were precise. FM02 now says to judge the Requirements section alone. In j2 both tiers caught all 6.</li>
+          <li><b>j2 is too good for this set.</b> The default tier now misses 1 verdict in 300, so this golden set has hit the problem FM07 warns about: it can no longer show progress. The fast tier still ignores the na rule on 2 of the 3 PRDs with no eval plan, so that rule is the one place the tiers really differ. The next version of the set needs harder cases, such as flaws stated subtly or split across sections.</li>
         </ol>
       </div>
 
