@@ -225,6 +225,37 @@
    ]
   },
   {
+   "id": "safety",
+   "title": "How do you test safety and guardrails?",
+   "summary": "Guests treat guardrails as part of the eval plan: say what the product must not do, test it, red-team it continuously, and re-measure after every change.",
+   "quotes": [
+    {
+     "speaker": "Ankit Shukla",
+     "file": "episodes/2026-02-19-ai-evals-explained-simply.md",
+     "ts": "00:16:59",
+     "quote": "And then guardrails. This is a major part. where evals actually shine which is you are going to define what should the model do what should the product do what should it not do"
+    },
+    {
+     "speaker": "Jake Brill",
+     "file": "episodes/2025-08-24-jake-brill-podcast.md",
+     "ts": "00:07:22",
+     "quote": "We do red teaming not just for new launches, but for our products all across the board."
+    },
+    {
+     "speaker": "Jake Brill",
+     "file": "episodes/2025-08-24-jake-brill-podcast.md",
+     "ts": "00:30:31",
+     "quote": "there's a lot of work that we do to mitigate prompt injection, to make sure that the agents are acting in a reliable fashion."
+    },
+    {
+     "speaker": "Greg Greiner",
+     "file": "episodes/2026-11-13-ai-customer-research.md",
+     "ts": "00:46:03",
+     "quote": "you need to have the appropriate guardrails in place and you need to be thinking about every update you make. And measuring them against both those guardrails as well as continuing to do some level of human QA."
+    }
+   ]
+  },
+  {
    "id": "owner",
    "title": "Who should own the evals?",
    "summary": "Guests put the PM at the centre, because evals are where product judgment turns into something a team can run.",

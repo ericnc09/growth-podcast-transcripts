@@ -208,14 +208,14 @@ footer { border-top: 1px solid var(--line); padding-block: 20px 32px; font-size:
 
       <div class="panel">
         <div class="panel-head"><div><h2>Golden dataset</h2>
-          <p class="muted small">30 fictional PRDs for 6 AI features. Each failure mode has a sound and a flawed version of the relevant passage; every PRD is assembled from those parts, so each label is exact by construction.</p></div></div>
+          <p class="muted small">42 fictional PRDs for 6 AI features: 30 standard and 12 hard. Each failure mode has a sound and a flawed version of the relevant passage, and every PRD is assembled from those parts, so each label is exact by construction. The hard cases add flaws stated subtly, traps (sound passages that look flawed) and sound passages moved to an unexpected section.</p></div></div>
         <div class="case-list" id="case-list"></div>
         <div id="case-view"></div>
       </div>
 
       <div class="panel">
         <div class="panel-head"><div><h2>Judge changelog</h2>
-          <p class="muted small">What the first full run (judge j1, 30 cases × 3 runs per tier, Nov 27) found, what changed for j2, and how j2 scored on the same set. Older runs stay in the store under their own version.</p></div></div>
+          <p class="muted small">What the first full run (judge j1, 30 cases × 3 runs per tier, Nov 27) found, what changed for j2, and how j2 scored on the same set. Older runs stay in the store under their own version; the charts above show only the current judge. In j1 and j2, FM06 meant "fuzzy rubric".</p></div></div>
         <div class="scroll"><table class="data">
           <thead><tr><th></th><th>j1 fast</th><th>j1 default</th><th>j2 fast</th><th>j2 default</th></tr></thead>
           <tbody>
@@ -231,6 +231,7 @@ footer { border-top: 1px solid var(--line); padding-block: 20px 32px; font-size:
           <li><b>Most misses were the na rule.</b> On the 3 PRDs with no eval plan, judges still graded the eval-plan checks instead of answering na. j2 states the rule as an instruction, naming the checks.</li>
           <li><b>The fast tier read FM02 too broadly.</b> It passed 4 of 6 PRDs with vague requirements because their eval plans were precise. FM02 now says to judge the Requirements section alone. In j2 both tiers caught all 6.</li>
           <li><b>j2 is too good for this set.</b> The default tier now misses 1 verdict in 300, so this golden set has hit the problem FM07 warns about: it can no longer show progress. The fast tier still ignores the na rule on 2 of the 3 PRDs with no eval plan, so that rule is the one place the tiers really differ. The next version of the set needs harder cases, such as flaws stated subtly or split across sections.</li>
+          <li><b>j3 follows a review of the failure-mode list.</b> Fuzzy rubric is merged into FM03, now "Generic or fuzzy measures", because the two kept overlapping. FM06 is now "Safety and guardrails untested", and every PRD has a safety section. 12 hard cases join the 30 standard ones, and the trade-off table reports the hard set on its own.</li>
         </ol>
       </div>
 
@@ -346,16 +347,16 @@ const $ = (id) => document.getElementById(id);
 const safeUrl = (u) => (typeof u === "string" && u.startsWith("https://")) ? u : null;
 
 // ---------- constants ----------
-const JUDGE_VERSION = "j2";
+const JUDGE_VERSION = "j3";
 const REPS = 3;
 const TIERS = { quick: { label: "Fast tier", model: "Claude Haiku 5.5", pin: 0.10, pout: 0.50 },
                 default: { label: "Default tier", model: "Claude Sonnet 5.5", pin: 2.00, pout: 10.00 } };
-const EVAL_DEPENDENT = ["FM03", "FM04", "FM05", "FM06", "FM07", "FM10"];
+const EVAL_DEPENDENT = ["FM03", "FM04", "FM05", "FM07", "FM10"];
 const ROLES = [
-  { name: "Skeptical CPO", lens: "Is success defined, and can the evals show progress?", modes: ["FM02", "FM07"] },
-  { name: "AI platform PM", lens: "Can the judges be trusted?", modes: ["FM05", "FM06"] },
-  { name: "Research and quality lead", lens: "Are the failure modes real, and specific to this product?", modes: ["FM04", "FM03"] },
-  { name: "Growth leader", lens: "Is there a quality bar, and a loop after launch?", modes: ["FM01", "FM08"] },
+  { name: "Skeptical CPO", lens: "Is there a real quality bar, and can the evals show progress?", modes: ["FM01", "FM02", "FM07"] },
+  { name: "AI platform PM", lens: "Can the judges and the metrics be trusted?", modes: ["FM05", "FM03"] },
+  { name: "Research and quality lead", lens: "Are the failure modes real, and watched after launch?", modes: ["FM04", "FM08"] },
+  { name: "Trust and safety lead", lens: "What must it never do, and what stops it?", modes: ["FM06"] },
   { name: "Engineering and data partner", lens: "Can we afford it, and can we debug it?", modes: ["FM09", "FM10"] },
 ];
 
@@ -503,9 +504,10 @@ function costOf(calls, tier) {
 
 // ---------- rendering: glass box ----------
 function setupIds() {
+  // Only runs of the current judge: older versions judged different cases and definitions (see the changelog).
   const ids = new Set(Object.keys(store.runs));
   for (const c of store.calls) ids.add(c.runId);
-  return [...ids].sort();
+  return [...ids].filter(id => id.endsWith("-" + JUDGE_VERSION)).sort();
 }
 function tierOf(setupId) { return setupId.split("-")[0]; }
 function setupLabel(id) { const t = TIERS[tierOf(id)]; return (t ? t.label : id) + " · judge " + id.split("-")[1]; }
@@ -517,7 +519,7 @@ function renderStats() {
   const lat = calls.map(c => c.latencyMs), cost = costOf(calls, selectedSetup ? tierOf(selectedSetup) : "default");
   const stat = (b, span) => h("div", { class: "stat" }, h("b", null, b), h("span", null, span));
   s.append(
-    stat(String(GOLD.length), "golden PRDs, 6 fictional features"),
+    stat(String(GOLD.length), "golden PRDs (" + GOLD.filter(c => c.set === "hard").length + " hard), 6 fictional features"),
     stat(String(MODES.length), "failure modes, " + MODES.reduce((n, m) => n + m.quotes.length, 0) + " verified quotes"),
     stat(calls.length ? String(calls.length) : "0", "judge calls saved for this setup"),
     stat(pct(o.acc), "accuracy, majority of 3"),
@@ -679,24 +681,26 @@ function renderFmTable() {
 
 function renderTradeTable() {
   const t = $("trade-table"); t.replaceChildren();
-  t.append(h("thead", null, h("tr", null, h("th", null, "Setup"), h("th", { class: "num" }, "Accuracy"), h("th", { class: "num" }, "Recall"), h("th", { class: "num" }, "p50"), h("th", { class: "num" }, "p95"), h("th", { class: "num" }, "Tokens / review"), h("th", { class: "num" }, "Cost / review"))));
+  t.append(h("thead", null, h("tr", null, h("th", null, "Setup"), h("th", { class: "num" }, "Accuracy"), h("th", { class: "num" }, "Hard set"), h("th", { class: "num" }, "Recall"), h("th", { class: "num" }, "p50"), h("th", { class: "num" }, "p95"), h("th", { class: "num" }, "Tokens / review"), h("th", { class: "num" }, "Cost / review"))));
   const b = h("tbody"); let any = false;
   for (const id of setupIds()) {
     const calls = callsFor(id); if (!calls.length) continue; any = true;
     const tier = tierOf(id);
     for (const reps of [1, REPS]) {
       const sub = calls.filter(c => c.rep <= reps);
-      const o = overall(scoreModes(gridFrom(sub, reps), MODES, GOLD, reps));
+      const g = gridFrom(sub, reps);
+      const o = overall(scoreModes(g, MODES, GOLD, reps));
+      const oh = overall(scoreModes(g, MODES, GOLD.filter(c => c.set === "hard"), reps));
       const lat = calls.filter(c => c.rep === 1).map(c => c.latencyMs);
       const co = costOf(sub, tier);
       b.append(h("tr", null, h("td", null, (TIERS[tier] ? TIERS[tier].label : tier) + " ×" + reps),
-        h("td", { class: "num" }, pct(o.acc)), h("td", { class: "num" }, pct(o.recall)),
+        h("td", { class: "num" }, pct(o.acc)), h("td", { class: "num" }, pct(oh.acc)), h("td", { class: "num" }, pct(o.recall)),
         h("td", { class: "num" }, secs(quantile(lat, 0.5))), h("td", { class: "num" }, secs(quantile(lat, 0.95))),
         h("td", { class: "num" }, co.tin == null ? "–" : Math.round((co.tin + co.tout) * reps).toLocaleString()),
         h("td", { class: "num" }, co.cost == null ? "–" : money(co.cost * reps))));
     }
   }
-  if (!any) b.append(h("tr", null, h("td", { colspan: 7, class: "note" }, "No saved runs yet. Run the golden set on the fast and default tiers to fill this table.")));
+  if (!any) b.append(h("tr", null, h("td", { colspan: 8, class: "note" }, "No saved runs yet. Run the golden set on the fast and default tiers to fill this table.")));
   t.append(b);
   $("price-note").textContent = "Latency is measured per call; three judges run in parallel, so a 3-judge review takes about as long as its slowest call. Tokens are estimated at 4 characters per token. Cost assumes list prices of the model each tier usually maps to: fast tier as " + TIERS.quick.model + " ($" + TIERS.quick.pin + " in / $" + TIERS.quick.pout + " out per million tokens), default tier as " + TIERS.default.model + " ($" + TIERS.default.pin + " / $" + TIERS.default.pout + "). The page cannot see which model answered.";
 }
@@ -706,7 +710,9 @@ function renderCases() {
   for (const c of GOLD) {
     const b = h("button", { class: "case-btn", type: "button", "aria-pressed": String(selectedCase === c.id) },
       h("span", { class: "mono small" }, c.id), h("span", { class: "small" }, c.title + (c.agent ? " · agent" : "")),
-      h("span", { class: "chips" }, c.planted.length ? c.planted.map(p => h("span", { class: "chip acc", title: MODE[p].name }, p)) : h("span", { class: "chip pass" }, "clean")));
+      h("span", { class: "chips" }, ...(c.set === "hard" ? [h("span", { class: "chip warn" }, "hard")] : []),
+        ...(c.planted.length ? c.planted.map(p => h("span", { class: "chip acc", title: MODE[p].name + (c.variants[p] === "subtle" ? ", stated subtly" : "") }, p + (c.variants[p] === "subtle" ? " subtle" : ""))) : [h("span", { class: "chip pass" }, "clean")]),
+        ...Object.entries(c.variants || {}).filter(([, x]) => x === "near" || x === "split").map(([p, x]) => h("span", { class: "chip pass", title: x === "near" ? "Looks like " + MODE[p].name + " but is sound" : "Sound, but in an unexpected section" }, p + " " + (x === "near" ? "trap" : "moved")))));
     b.addEventListener("click", () => { selectedCase = selectedCase === c.id ? null : c.id; renderCases(); });
     list.append(b);
   }

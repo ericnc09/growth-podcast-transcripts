@@ -18,7 +18,7 @@ topics = [{**{k: t[k] for k in ("id", "title", "summary")}, "quotes": [slim(q) f
 data = {
     "modes": modes,
     "topics": topics,
-    "golden": [{**{k: c[k] for k in ("id", "title", "agent", "planted", "prd")},
+    "golden": [{**{k: c[k] for k in ("id", "set", "title", "agent", "planted", "variants", "prd")},
                 "labels": {fm: ("na" if v == "n/a" else v) for fm, v in c["labels"].items()}} for c in golden],
     "sample": {"title": "Fieldnote Auto-Synthesis", "prd": sample,
                "expected": {"FM01": "pass", "FM02": "pass", "FM03": "fail", "FM04": "fail", "FM05": "fail",

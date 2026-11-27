@@ -17,12 +17,13 @@
     {"speaker": "Daniel McKinnon", "file": "episodes/2026-07-28-how-to-build-your-first-eval.md", "ts": "00:04:52", "quote": "an eval is the best way to communicate what your product should be doing"},
     {"speaker": "Aman Khan", "file": "episodes/2025-06-15-aman-khan-podcast.md", "ts": "01:47:00", "quote": "what if evals were your requirements instead of your AI product?"}
    ]},
-  {"id": "FM03", "name": "Generic metrics instead of product-specific ones",
-   "check": "The eval plan leans on off-the-shelf scores (hallucination score, toxicity, BLEU, public benchmarks) rather than failures specific to this product.",
-   "pass_if": "Metrics are tied to concrete ways this product's output goes wrong for its users.",
+  {"id": "FM03", "name": "Generic or fuzzy measures",
+   "check": "The eval plan leans on off-the-shelf scores (hallucination score, toxicity, BLEU, public benchmarks), or grades on 1-to-5 or 1-to-10 scales, or uses criteria too vague for two reviewers to agree on.",
+   "pass_if": "Metrics are tied to concrete ways this product's output goes wrong for its users, and each criterion is pass/fail and specific enough that two reviewers would label the same output the same way.",
    "quotes": [
     {"speaker": "Hamel Husain", "file": "episodes/2025-07-11-hamel-shreya-podcast.md", "ts": "00:17:07", "quote": "the first thing to know about evals where people go off the rails is do not reach for generic metrics."},
-    {"speaker": "Hamel Husain", "file": "episodes/2025-07-11-hamel-shreya-podcast.md", "ts": "00:42:51", "quote": "there's a really big difference between foundation model benchmarks."}
+    {"speaker": "Hamel Husain", "file": "episodes/2025-07-11-hamel-shreya-podcast.md", "ts": "00:42:51", "quote": "there's a really big difference between foundation model benchmarks."},
+    {"speaker": "Shreya Shankar", "file": "episodes/2025-07-11-hamel-shreya-podcast.md", "ts": "00:09:59", "quote": "we say limit yourself to binary, because that is what the LLM can do very well."}
    ]},
   {"id": "FM04", "name": "Failure modes guessed, not observed",
    "check": "The listed risks are brainstormed; there is no plan to read real outputs or traces and categorise what actually goes wrong.",
@@ -39,12 +40,13 @@
     {"speaker": "Hamel Husain", "file": "episodes/2025-07-11-hamel-shreya-podcast.md", "ts": "01:08:29", "quote": "80% of people who are using LLM as a judge are just writing a prompt and just praying that is doing the right thing."},
     {"speaker": "Aman Khan", "file": "episodes/2025-06-15-aman-khan-podcast.md", "ts": "01:24:40", "quote": "I don't see too many people actually, when they talk about evals saying that you need to check the work of the LLM as a judge"}
    ]},
-  {"id": "FM06", "name": "Fuzzy rubric",
-   "check": "Quality is graded on 1-to-5 or 1-to-10 scales, or with criteria too vague for two people to agree on.",
-   "pass_if": "Each criterion is binary (pass or fail) and specific enough that two reviewers would label the same output the same way.",
+  {"id": "FM06", "name": "Safety and guardrails untested",
+   "check": "The PRD doesn't say what the feature must never do (unsafe or unauthorised actions, private data leaks, following injected instructions), or relies only on the prompt or good intentions to prevent it.",
+   "pass_if": "It names what the feature must never do, a guardrail outside the prompt that blocks each (a code check, a permission limit or a human approval), and test cases that check them.",
    "quotes": [
-    {"speaker": "Shreya Shankar", "file": "episodes/2025-07-11-hamel-shreya-podcast.md", "ts": "00:09:59", "quote": "we say limit yourself to binary, because that is what the LLM can do very well."},
-    {"speaker": "Shreya Shankar", "file": "episodes/2025-07-11-hamel-shreya-podcast.md", "ts": "00:07:47", "quote": "In our course, we define that as a rubric of binary criteria."}
+    {"speaker": "Ankit Shukla", "file": "episodes/2026-02-19-ai-evals-explained-simply.md", "ts": "00:16:59", "quote": "And then guardrails. This is a major part. where evals actually shine which is you are going to define what should the model do what should the product do what should it not do"},
+    {"speaker": "Jake Brill", "file": "episodes/2025-08-24-jake-brill-podcast.md", "ts": "00:30:31", "quote": "there's a lot of work that we do to mitigate prompt injection, to make sure that the agents are acting in a reliable fashion."},
+    {"speaker": "Greg Greiner", "file": "episodes/2026-11-13-ai-customer-research.md", "ts": "00:46:03", "quote": "you need to have the appropriate guardrails in place and you need to be thinking about every update you make. And measuring them against both those guardrails as well as continuing to do some level of human QA."}
    ]},
   {"id": "FM07", "name": "Evals with no headroom",
    "check": "The launch bar is near-perfect scores on a test set that is easy for today's model, so the evals cannot show progress or regressions.",
